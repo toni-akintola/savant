@@ -60,19 +60,23 @@ def fetch_follows_of_seed_accounts(
     # Process each seed account
     for i, account in enumerate(tqdm(seed_accounts, desc="Processing seed accounts")):
         handle = account["handle"].lstrip("@")
-        if account["followers"] / account["following"] < 1.5:
+        # Skip accounts with a low follower:following ratio
+        if account["following"] > 10000 or (
+            account["following"] > 1000
+            and account["followers"] / account["following"] < 1.5
+        ):
+            print("Skipping")
             continue
         try:
-            # Get follows of this account
             follows = get_follows(handle)
 
             # Add each follow to the sets
-            for follow in follows:
+            for profile in follows:
                 follow_obj = PartialBlueskyUser(
-                    name=follow["display_name"],
-                    handle=follow["handle"].lstrip("@"),
-                    followers=None,  # We don't have this info yet
-                    following=None,  # We don't have this info yet
+                    name=profile["display_name"],
+                    handle=profile["handle"].lstrip("@"),
+                    followers=None,
+                    following=None,
                 )
                 globally_significant_handles.add(follow_obj)
                 current_batch.add(follow_obj)
@@ -146,12 +150,11 @@ def calculate_sfc(
 
     # Load globally significant accounts
     with open(gsa_file, "r", encoding="utf-8") as f:
-        gsa_accounts = json.load(f)
-    print(f"Loaded {len(gsa_accounts)} globally significant accounts")
+        gsa_accounts = json.load(f) + seed_accounts
 
     # Extract all handles from globally significant accounts
     gsa_handles = set(account["handle"].lstrip("@") for account in gsa_accounts)
-
+    print(f"Loaded {len(gsa_accounts)} globally significant accounts")
     # Initialize counter for SFC
     sfc_counter = Counter()
 
@@ -295,7 +298,7 @@ def download_user_profiles(
     accounts_file="sfc_stats.json",
     output_file="user_profiles.json",
     batch_size=50,
-    delay=0.5,
+    delay=0.8,
 ):
     """
     Download full user profiles for selected accounts
@@ -389,7 +392,7 @@ def save_profiles_batch(profiles, output_file, mode="w"):
         json.dump(profiles, f, indent=2)
 
 
-def run_full_pipeline(max_seeds=500, cutoff_percentile=90, batch_size=50):
+def run_full_pipeline(max_seeds=500, cutoff_percentile=75, batch_size=50):
     """
     Run the full pipeline: fetch follows, calculate SFC, analyze stats, download profiles
 
@@ -414,5 +417,16 @@ def run_full_pipeline(max_seeds=500, cutoff_percentile=90, batch_size=50):
 
 
 if __name__ == "__main__":
-    # Or run the full pipeline
-    run_full_pipeline(max_seeds=500, cutoff_percentile=90, batch_size=50)
+    cutoff_percentile = 90
+    batch_size = 50
+
+    print("\n=== Step 2: Calculating SFC ===")
+    calculate_sfc()
+
+    print("\n=== Step 3: Analyzing SFC statistics ===")
+    analyze_sfc_stats(cutoff_percentile=cutoff_percentile)
+
+    print("\n=== Step 4: Downloading user profiles ===")
+    download_user_profiles(batch_size=batch_size)
+
+    print("\n=== Pipeline complete! ===")

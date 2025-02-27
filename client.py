@@ -7,7 +7,6 @@ load_dotenv()
 
 BLUESKY_HANDLE = os.getenv("BLUESKY_HANDLE")
 BLUESKY_PASSWORD = os.getenv("BLUESKY_PASSWORD")
-print(BLUESKY_HANDLE, BLUESKY_PASSWORD)
 
 
 def get_client() -> Client:
