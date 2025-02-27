@@ -181,3 +181,5 @@ cython_debug/
 
 *.json
 *.csv
+wikipedia_categories.json
+bluesky_top_users.json
