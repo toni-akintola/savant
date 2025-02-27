@@ -414,14 +414,5 @@ def run_full_pipeline(max_seeds=500, cutoff_percentile=90, batch_size=50):
 
 
 if __name__ == "__main__":
-    # Uncomment the function you want to run
-    # fetch_follows_of_seed_accounts()
-    # calculate_sfc()
-    # analyze_sfc_stats(cutoff_percentile=90)
-    # download_user_profiles()
-
     # Or run the full pipeline
-    # run_full_pipeline(max_seeds=500, cutoff_percentile=90, batch_size=50)
-
-    # Default: just fetch follows
-    fetch_follows_of_seed_accounts()
+    run_full_pipeline(max_seeds=500, cutoff_percentile=90, batch_size=50)
