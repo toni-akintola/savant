@@ -20,13 +20,13 @@ def get_client() -> Client:
     return client
 
 
-def get_follows(handle: str, delay: float = 0.2) -> list[dict]:
+def get_follows(handle: str, delay: float = 0.1) -> list[dict]:
     """
     Get all follows of an account, handling pagination
 
     Args:
         handle: The handle of the account to get follows for
-        delay: Time to wait between pagination requests
+        delay: Time to wait between pagination requests (default 0.1s = 10 requests/sec)
 
     Returns:
         List of follow objects containing display_name and handle
@@ -50,8 +50,8 @@ def get_follows(handle: str, delay: float = 0.2) -> list[dict]:
             if not cursor:
                 break
 
-            # Sleep between requests to avoid rate limiting
-            time.sleep(delay)
+            # Sleep between requests to stay under rate limit
+            time.sleep(delay)  # 10 requests/second = 600 requests/minute
 
         except Exception as e:
             print(f"Error fetching follows for @{handle} (cursor: {cursor}): {e}")
