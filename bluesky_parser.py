@@ -6,26 +6,7 @@ import time
 import csv
 import json
 
-
-class BlueskyUser:
-    def __init__(self, rank, name, handle, followers, following):
-        self.rank = rank
-        self.name = name
-        self.handle = handle
-        self.followers = followers
-        self.following = following
-
-    def __repr__(self):
-        return f"#{self.rank}: {self.name} (@{self.handle}) - {self.followers} followers, {self.following} following"
-
-    def to_dict(self):
-        return {
-            "rank": self.rank,
-            "name": self.name,
-            "handle": self.handle,
-            "followers": self.followers,
-            "following": self.following,
-        }
+from models import PartialBlueskyUser
 
 
 def parse_bluesky_users(text):
@@ -59,16 +40,17 @@ def parse_bluesky_users(text):
                 while rank_index < len(lines) and not lines[rank_index].startswith("#"):
                     rank_index += 1
 
+                rank = None
                 if rank_index < len(lines):
                     rank = int(lines[rank_index].replace("#", ""))
 
-                    # Create a BlueskyUser object
-                    user = BlueskyUser(rank, name, handle, followers, following)
-                    users.append(user)
+                # Create a PartialBlueskyUser object with optional rank
+                user = PartialBlueskyUser(name, handle, followers, following, rank)
+                users.append(user)
 
-                    # Move to the next user (after the rank)
-                    i = rank_index + 1
-                    continue
+                # Move to the next user (after the rank)
+                i = rank_index + 1
+                continue
             except (ValueError, IndexError):
                 # If parsing fails, move to the next line
                 pass
@@ -116,6 +98,7 @@ def scrape_bluesky_users():
 
         # Print the first 10 users
         for user in users[:10]:
+
             print(user)
 
         # Save the data to CSV

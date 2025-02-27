@@ -1,6 +1,7 @@
 from atproto import Client, client_utils
 from dotenv import load_dotenv
 import os
+import time
 
 load_dotenv()
 
@@ -19,14 +20,50 @@ def get_client() -> Client:
     return client
 
 
-def get_friends_of_account(account: str) -> list[str]:
+def get_follows(handle: str, delay: float = 0.2) -> list[dict]:
     """
-    Get friends of an account
+    Get all follows of an account, handling pagination
+
+    Args:
+        handle: The handle of the account to get follows for
+        delay: Time to wait between pagination requests
+
+    Returns:
+        List of follow objects containing display_name and handle
     """
     client = get_client()
-    friends = client.get_profile(account).data.followers
-    return friends
+    all_follows = []
+    cursor = None
+
+    while True:
+        try:
+            # Get the next page of follows
+            response = client.get_follows(handle, cursor=cursor)
+
+            # Add the follows from this page to our list
+            all_follows.extend(response.follows)
+
+            # Update the cursor
+            cursor = response.cursor
+
+            # If there's no cursor, we've reached the end
+            if not cursor:
+                break
+
+            # Sleep between requests to avoid rate limiting
+            time.sleep(delay)
+
+        except Exception as e:
+            print(f"Error fetching follows for @{handle} (cursor: {cursor}): {e}")
+            break
+
+    return all_follows
 
 
-if __name__ == "__main__":
-    pass
+def get_profile(handle: str) -> dict:
+    """
+    Get profile of an account
+    """
+    client = get_client()
+    response = client.get_profile(handle)
+    return response
