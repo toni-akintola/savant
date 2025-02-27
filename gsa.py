@@ -60,6 +60,8 @@ def fetch_follows_of_seed_accounts(
     # Process each seed account
     for i, account in enumerate(tqdm(seed_accounts, desc="Processing seed accounts")):
         handle = account["handle"].lstrip("@")
+        if account["followers"] / account["following"] < 1.5:
+            continue
         try:
             # Get follows of this account
             follows = get_follows(handle)
