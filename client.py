@@ -2,11 +2,13 @@ from atproto import Client, client_utils
 from dotenv import load_dotenv
 import os
 import time
+import requests
 
 load_dotenv()
 
 BLUESKY_HANDLE = os.getenv("BLUESKY_HANDLE")
 BLUESKY_PASSWORD = os.getenv("BLUESKY_PASSWORD")
+PUBLIC_API_URL = "https://public.api.bsky.app/"
 
 
 def get_client() -> Client:
@@ -15,7 +17,6 @@ def get_client() -> Client:
     """
     client = Client()
     client.login(BLUESKY_HANDLE, BLUESKY_PASSWORD)
-
     return client
 
 
@@ -59,10 +60,31 @@ def get_follows(handle: str, delay: float = 0.1) -> list[dict]:
     return all_follows
 
 
-def get_profile(handle: str) -> dict:
+def get_profile_public_api(handle: str) -> dict:
     """
-    Get profile of an account
+    Get profile of an account using the public Bluesky API via requests
+
+    Args:
+        handle: The handle of the account to retrieve profile for
+
+    Returns:
+        A dictionary containing the profile information
+    """
+    url = f"{PUBLIC_API_URL}/xrpc/app.bsky.actor.getProfile?actor={handle}"
+    response = requests.get(url)
+    response.raise_for_status()  # Raise an exception for bad responses
+    return response.json()
+
+
+def get_profile_authenticated(handle: str) -> dict:
+    """
+    Get profile of an account using an authenticated Bluesky client
+
+    Args:
+        handle: The handle of the account to retrieve profile for
+
+    Returns:
+        A dictionary containing the profile information
     """
     client = get_client()
-    response = client.get_profile(handle)
-    return response
+    return client.get_profile(handle)
