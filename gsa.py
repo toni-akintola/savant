@@ -332,6 +332,19 @@ def save_profiles_batch(profiles, output_file, mode="w"):
         json.dump(profiles, f, indent=2)
 
 
+def process_profile(profile):
+    try:
+        # Fetch posts for the user
+        posts = get_posts_public_api(profile["handle"])
+        # Add posts to the profile object
+        profile["recent_posts"] = posts
+        return profile
+    except Exception as e:
+        print(f"Error fetching posts for {profile['handle']}: {e}")
+        # Still return the profile even if post fetching fails
+        return profile
+
+
 def gather_posts(
     profiles_file="user_profiles.json",
     output_file="user_profiles_with_posts.json",
@@ -348,18 +361,6 @@ def gather_posts(
     # Load existing profiles
     with open(profiles_file, "r", encoding="utf-8") as f:
         profiles = json.load(f)
-
-    def process_profile(profile):
-        try:
-            # Fetch posts for the user
-            posts = get_posts_public_api(profile["handle"])
-            # Add posts to the profile object
-            profile["recent_posts"] = posts
-            return profile
-        except Exception as e:
-            print(f"Error fetching posts for {profile['handle']}: {e}")
-            # Still return the profile even if post fetching fails
-            return profile
 
     # Process profiles in parallel
     print(f"Processing {len(profiles)} profiles with {num_workers} workers...")

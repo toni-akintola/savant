@@ -9,7 +9,7 @@ load_dotenv()
 
 BLUESKY_HANDLE = os.getenv("BLUESKY_HANDLE")
 BLUESKY_PASSWORD = os.getenv("BLUESKY_PASSWORD")
-PUBLIC_API_URL = "https://public.api.bsky.app/"
+PUBLIC_API_URL = "https://public.api.bsky.app"
 
 
 class FeedFilter(Enum):
