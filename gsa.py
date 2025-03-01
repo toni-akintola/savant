@@ -31,7 +31,11 @@ def save_batch(accounts, output_file, mode="w"):
 
     # Write to file
     with open(output_file, "w", encoding="utf-8") as f:
-        json.dump(accounts_list, f, indent=2)
+        f.write("[\n")
+        for i, account in enumerate(accounts_list):
+            json_line = json.dumps(account)
+            f.write(f'  {json_line}{"," if i < len(accounts_list)-1 else ""}\n')
+        f.write("]\n")
 
 
 def fetch_follows_of_seed_accounts(
@@ -324,6 +328,21 @@ def save_profiles_batch(profiles, output_file, mode="w"):
     # Write to file
     with open(output_file, "w", encoding="utf-8") as f:
         json.dump(profiles, f, indent=2)
+
+
+def gather_unstructured_data(
+    profiles_file="user_profiles.json",
+    output_file="user_profiles_with_unstructured_data.json",
+):
+    """
+    Gather unstructured data from user profiles
+    """
+    with open(profiles_file, "r", encoding="utf-8") as f:
+        profiles = json.load(f)
+
+    for profile in profiles:
+        print(profile)
+        break
 
 
 def run_full_pipeline(max_seeds=500, min_sfc=5, batch_size=50):

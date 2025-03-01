@@ -130,7 +130,11 @@ def save_to_csv(users, filename):
 def save_to_json(users, filename):
     """Save the users data to a JSON file"""
     with open(filename, "w", encoding="utf-8") as jsonfile:
-        json.dump([user.to_dict() for user in users], jsonfile, indent=2)
+        jsonfile.write("[\n")
+        for i, user in enumerate(users):
+            json_line = json.dumps(user.to_dict())
+            jsonfile.write(f'  {json_line}{"," if i < len(users)-1 else ""}\n')
+        jsonfile.write("]\n")
 
     print(f"Saved data to {filename}")
 
