@@ -1,5 +1,5 @@
 from bluesky_parser import PartialBlueskyUser
-from client import get_follows, get_profile_public_api
+from client import get_follows, get_posts_public_api, get_profile_public_api
 from utils import load_bluesky_users
 import json
 import time
@@ -9,6 +9,8 @@ from collections import Counter
 import statistics
 import os
 from multiprocessing import Pool
+import anthropic
+from concurrent.futures import ThreadPoolExecutor
 
 
 def save_batch(accounts, output_file, mode="w"):
@@ -330,19 +332,199 @@ def save_profiles_batch(profiles, output_file, mode="w"):
         json.dump(profiles, f, indent=2)
 
 
-def gather_unstructured_data(
+def gather_posts(
     profiles_file="user_profiles.json",
-    output_file="user_profiles_with_unstructured_data.json",
+    output_file="user_profiles_with_posts.json",
+    num_workers=10,
 ):
     """
-    Gather unstructured data from user profiles
+    Gather posts from user profiles and add to existing profile data using parallel processing
+
+    Args:
+        profiles_file: Input JSON file with user profiles
+        output_file: Output JSON file with profiles and their recent posts
+        num_workers: Number of parallel workers
     """
+    # Load existing profiles
     with open(profiles_file, "r", encoding="utf-8") as f:
         profiles = json.load(f)
 
-    for profile in profiles:
-        print(profile)
-        break
+    def process_profile(profile):
+        try:
+            # Fetch posts for the user
+            posts = get_posts_public_api(profile["handle"])
+            # Add posts to the profile object
+            profile["recent_posts"] = posts
+            return profile
+        except Exception as e:
+            print(f"Error fetching posts for {profile['handle']}: {e}")
+            # Still return the profile even if post fetching fails
+            return profile
+
+    # Process profiles in parallel
+    print(f"Processing {len(profiles)} profiles with {num_workers} workers...")
+    with Pool(processes=num_workers) as pool:
+        updated_profiles = list(
+            tqdm(
+                pool.imap(process_profile, profiles),
+                total=len(profiles),
+                desc="Fetching user posts",
+            )
+        )
+
+    # Save updated profiles to a new JSON file, with each object on a single line
+    with open(output_file, "w", encoding="utf-8") as f:
+        f.write("[\n")
+        for i, profile in enumerate(updated_profiles):
+            json_line = json.dumps(profile)
+            f.write(f'  {json_line}{"," if i < len(updated_profiles)-1 else ""}\n')
+        f.write("]\n")
+
+    print(f"Saved profiles with posts to {output_file}")
+    print(f"Total profiles processed: {len(updated_profiles)}")
+
+
+def gather_unstructured_data(
+    profiles_file="user_profiles_with_posts.json",
+    output_file="user_profiles_with_unstructured_data.json",
+    num_workers=10,
+    batch_size=50,
+):
+    """
+    Gather unstructured metadata using Claude 3.5 Haiku for each profile
+
+    Args:
+        profiles_file: Input JSON file with user profiles and posts
+        output_file: Output JSON file with profiles and metadata
+        num_workers: Number of parallel workers
+        batch_size: Size of batches for API calls
+    """
+    # Load existing profiles
+    with open(profiles_file, "r", encoding="utf-8") as f:
+        profiles = json.load(f)
+
+    # Initialize Anthropic client
+    client = anthropic.Anthropic(api_key=os.environ.get("ANTHROPIC_API_KEY"))
+
+    # Claude prompt for metadata extraction
+    CLAUDE_PROMPT = """
+    You are a precise metadata extraction assistant for social media profiles. Your task is to parse the given account information and generate an array of structured JSON metadata profiles.
+
+    Input will be a batch of social media account objects, each with a display name and description. Output a list of JSON objects with the following schema:
+
+    {
+      "identity": {
+        "display_name": "string",
+        "handle": "string",
+        "pronouns": "optional_string",
+        "self_description": "string"
+      },
+      "professional_tags": [
+        "writer", "journalist", "comedian", "streamer", "podcaster", 
+        "filmmaker", "content_creator"
+      ],
+      "interests": [
+        "sports", "books", "gaming", "music", "technology", "politics", 
+        "film", "comedy", "history", "transgender_rights", 
+        "media_criticism", "pop_culture"
+      ],
+      "social_links": {
+        "primary_platforms": ["twitch", "youtube", "patreon", "substack", "onlyfans"],
+        "other_links": ["array_of_urls"]
+      },
+      "content_characteristics": {
+        "nsfw": "boolean",
+        "primary_themes": ["array_of_thematic_tags"]
+      },
+      "identity_markers": {
+        "gender_identity": ["trans", "non_binary", "cis"],
+        "location": "optional_string",
+        "cultural_background": "optional_string"
+      }
+    }
+
+    Guidelines:
+    - Be comprehensive but concise
+    - Use the predefined tags where possible
+    - If no clear match exists, use the most appropriate general category
+    - Infer context from writing style and self-description
+    - Only include links that are explicitly mentioned in the profile
+
+    Respond ONLY with the array of JSON objects. Do not include any additional text or explanation.
+    """
+
+    def process_batch(batch):
+        results = []
+        for profile in batch:
+            try:
+                # Extract display name and description
+                display_name = profile.get("displayName", "")
+                description = profile.get("description", "")
+                handle = profile.get("handle", "")
+
+                # Skip if no meaningful data
+                if not display_name and not description:
+                    profile["metadata"] = None
+                    results.append(profile)
+                    continue
+
+                # Prepare input for Claude
+                input_text = f"Display Name: {display_name}; Description: {description}; Handle: {handle}"
+
+                # Call Claude API
+                message = client.messages.create(
+                    model="claude-3-haiku-20240307",
+                    max_tokens=1000,
+                    temperature=0,
+                    system=CLAUDE_PROMPT,
+                    messages=[{"role": "user", "content": input_text}],
+                )
+
+                # Parse the response
+                try:
+                    metadata = json.loads(message.content[0].text)
+                    profile["metadata"] = metadata
+                except json.JSONDecodeError:
+                    print(f"Error parsing JSON for {handle}")
+                    profile["metadata"] = None
+
+                results.append(profile)
+
+                # Rate limiting - sleep a small amount between requests
+                time.sleep(0.05)
+
+            except Exception as e:
+                print(f"Error processing {profile.get('handle', 'unknown')}: {e}")
+                profile["metadata"] = None
+                results.append(profile)
+
+        return results
+
+    # Split profiles into batches
+    profile_batches = [
+        profiles[i : i + batch_size] for i in range(0, len(profiles), batch_size)
+    ]
+
+    # Process batches in parallel
+    updated_profiles = []
+    with ThreadPoolExecutor(max_workers=num_workers) as executor:
+        futures = [executor.submit(process_batch, batch) for batch in profile_batches]
+
+        # Collect results as they complete
+        for future in tqdm(futures, desc="Processing batches"):
+            batch_results = future.result()
+            updated_profiles.extend(batch_results)
+
+    # Save updated profiles to a new JSON file, with each object on a single line
+    with open(output_file, "w", encoding="utf-8") as f:
+        f.write("[\n")
+        for i, profile in enumerate(updated_profiles):
+            json_line = json.dumps(profile)
+            f.write(f'  {json_line}{"," if i < len(updated_profiles)-1 else ""}\n')
+        f.write("]\n")
+
+    print(f"Saved profiles with metadata to {output_file}")
+    print(f"Total profiles processed: {len(updated_profiles)}")
 
 
 def run_full_pipeline(max_seeds=500, min_sfc=5, batch_size=50):
@@ -363,8 +545,15 @@ def run_full_pipeline(max_seeds=500, min_sfc=5, batch_size=50):
     print("\n=== Step 4: Downloading user profiles ===")
     download_user_profiles(batch_size=batch_size)
 
+    print("\n=== Step 5: Gathering posts ===")
+    gather_posts()
+
+    print("\n=== Step 6: Gathering unstructured data ===")
+    gather_unstructured_data()
+
     print("\n=== Pipeline complete! ===")
 
 
 if __name__ == "__main__":
-    download_user_profiles()
+    gather_posts()
+    gather_unstructured_data()

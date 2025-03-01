@@ -3,12 +3,20 @@ from dotenv import load_dotenv
 import os
 import time
 import requests
+from enum import Enum
 
 load_dotenv()
 
 BLUESKY_HANDLE = os.getenv("BLUESKY_HANDLE")
 BLUESKY_PASSWORD = os.getenv("BLUESKY_PASSWORD")
 PUBLIC_API_URL = "https://public.api.bsky.app/"
+
+
+class FeedFilter(Enum):
+    posts_with_replies = "posts_with_replies"
+    posts_no_replies = "posts_no_replies"
+    posts_with_media = "posts_with_media"
+    posts_and_author_threads = "posts_and_author_threads"
 
 
 def get_client() -> Client:
@@ -88,3 +96,15 @@ def get_profile_authenticated(handle: str) -> dict:
     """
     client = get_client()
     return client.get_profile(handle)
+
+
+def get_posts_public_api(
+    handle: str, limit: int = 10, filter: FeedFilter = FeedFilter.posts_no_replies
+) -> list[dict]:
+    """
+    Get all posts of an account using the public Bluesky API via requests
+    """
+    url = f"{PUBLIC_API_URL}/xrpc/app.bsky.feed.getAuthorFeed?actor={handle}&limit={limit}&filter={filter.value}"
+    response = requests.get(url)
+    response.raise_for_status()  # Raise an exception for bad responses
+    return response.json()["feed"]
