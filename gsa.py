@@ -556,5 +556,4 @@ def run_full_pipeline(max_seeds=500, min_sfc=5, batch_size=50):
 
 
 if __name__ == "__main__":
-    gather_posts()
     gather_unstructured_data()
