@@ -1,5 +1,6 @@
 import json
 import os
+import random
 import time
 import re
 import logging
@@ -114,6 +115,34 @@ class BlueskyMetadataChain:
         logger.debug(f"Result title: {title}")
         logger.debug(f"Result description: {result_description[:100]}...")
 
+        # For Wikipedia articles, perform a more rigorous name check
+        if "wikipedia.org/wiki/" in url:
+            # Extract the article title from the URL
+            article_title = url.split("/wiki/")[-1].replace("_", " ")
+            article_title = article_title.split("#")[0]  # Remove any section anchors
+
+            # Decode URL encoding
+            import urllib.parse
+
+            article_title = urllib.parse.unquote(article_title)
+
+            logger.info(f"Wikipedia article title: {article_title}")
+
+            # Check if the name appears in the article title
+            name_parts = name.lower().split()
+            article_parts = article_title.lower().split()
+
+            # Check if all parts of the name appear in the article title
+            name_match = all(part in article_title.lower() for part in name_parts)
+
+            if not name_match:
+                logger.info(
+                    f"Wikipedia article title does not match user name. Article: '{article_title}', Name: '{name}'"
+                )
+                return False
+
+            logger.info(f"Wikipedia article title matches user name: {name_match}")
+
         prompt = f"""
         I need to verify if a search result is about the same person as a Bluesky user profile.
         
@@ -126,19 +155,20 @@ class BlueskyMetadataChain:
         Description: {result_description}
         URL: {url}
         
-        Based on this information, determine if we can be MORE THAN 95% confident that this search result refers to the same person as the Bluesky profile.
+        Based on this information, determine if we can be MORE THAN 100% confident that this search result refers to the same person as the Bluesky profile.
         
         Consider name matches, profession/interests alignment, and any other identifying information.
+        If the search result is a Wikipedia article, make sure the article is about the person, not just a generic article about the topic.
+        If the article is about a topic and not the person, or if the Bluesky user's description is not robust enough to make a determination, respond with "NO".
         
-        Respond with ONLY "YES" if you are >95% confident it's the same person, or "NO" if you are not that confident.
+        Respond with ONLY "YES" if you are 100% confident it's the same person, or "NO" if you are not that confident.
         """
-
         try:
             response = anthropic_client.messages.create(
                 model="claude-3-haiku-20240307",
                 max_tokens=5,
                 temperature=0,
-                system="You are a verification system that determines if two sources of information refer to the same person. Respond with ONLY 'YES' if >95% confident of a match, or 'NO' otherwise.",
+                system="You are a verification system that determines if two sources of information refer to the same person. Respond with ONLY 'YES' if 100% confident of a match, or 'NO' otherwise.",
                 messages=[{"role": "user", "content": prompt}],
             )
 
@@ -310,29 +340,43 @@ class BlueskyMetadataChain:
         logger.info(f"Processing user: {user.name} (@{user.handle})")
         if description:
             logger.info(f"User description: {description}")
+        else:
+            logger.info("No description available for this user")
 
         # Step 1: Create search query for general information
         logger.info("STEP 1: Creating general search query")
         query = self.create_search_query(user.name, description)
 
-        # Step 2: Create a specific Wikipedia query
-        logger.info("STEP 2: Creating Wikipedia-specific query")
-        wikipedia_query = f"{user.name}+wikipedia"
-        logger.info(f"Wikipedia query: {wikipedia_query}")
+        # Step 2: Create a specific Wikipedia query (only if description is available)
+        wikipedia_results = None
+        if description:
+            logger.info("STEP 2: Creating Wikipedia-specific query")
+            wikipedia_query = f"{user.name}+wikipedia"
+            logger.info(f"Wikipedia query: {wikipedia_query}")
+        else:
+            logger.info(
+                "STEP 2: Skipping Wikipedia search as no description is available"
+            )
 
         # Step 3: Perform Brave searches
         logger.info("STEP 3: Performing Brave searches")
         logger.info(f"Executing general search with query: {query}")
         search_results = search(query)
-        logger.info(f"Executing Wikipedia search with query: {wikipedia_query}")
-        wikipedia_results = search(wikipedia_query)
+
+        if description:
+            logger.info(f"Executing Wikipedia search with query: {wikipedia_query}")
+            wikipedia_results = search(wikipedia_query)
 
         # Step 4: Extract web results based on the API response structure
         logger.info("STEP 4: Extracting and processing search results")
         web_results = []
 
-        # Process both search results
-        for idx, results in enumerate([search_results, wikipedia_results]):
+        # Process search results
+        results_to_process = [search_results]
+        if description:
+            results_to_process.append(wikipedia_results)
+
+        for idx, results in enumerate(results_to_process):
             search_type = "General" if idx == 0 else "Wikipedia"
             logger.info(f"Processing {search_type} search results")
 
@@ -421,21 +465,33 @@ class BlueskyMetadataChain:
             logger.warning(f"No search results found for {user.handle}")
             return {user.handle: {"matched_results": []}}
 
-        # Step 5: Verify each result and prioritize Wikipedia
+        # Step 5: Verify each result and prioritize Wikipedia (only if description is available)
         logger.info("STEP 5: Verifying search results and extracting Wikipedia data")
         matched_results = []
         wikipedia_data = None
+        found_wikipedia_match = False
 
-        # First, check specifically for Wikipedia results
-        logger.info("Checking for Wikipedia results first")
-        wikipedia_count = 0
-        for result in web_results:
-            url = result.get("url", "")
+        # First, check specifically for Wikipedia results (only if description is available)
+        if description:
+            logger.info("Checking for Wikipedia results first")
+            wikipedia_results = [
+                r for r in web_results if "wikipedia.org/wiki/" in r.get("url", "")
+            ]
+            logger.info(f"Found {len(wikipedia_results)} Wikipedia URLs to check")
 
-            # Check if this is a Wikipedia URL
-            if url and "wikipedia.org/wiki/" in url:
-                wikipedia_count += 1
-                logger.info(f"Found Wikipedia URL: {url}")
+            # Sort Wikipedia results to prioritize those that seem most relevant to the person
+            # This helps ensure we process the most likely match first
+            wikipedia_results.sort(
+                key=lambda r: sum(
+                    part.lower() in r.get("title", "").lower()
+                    for part in user.name.lower().split()
+                ),
+                reverse=True,
+            )
+
+            for result in wikipedia_results:
+                url = result.get("url", "")
+                logger.info(f"Checking Wikipedia URL: {url}")
 
                 if self.verify_search_result(user.name, description, result):
                     logger.info(f"Wikipedia page verified as a match: {url}")
@@ -464,11 +520,22 @@ class BlueskyMetadataChain:
                             },
                         }
                     )
+
+                    # Set flag to indicate we found a Wikipedia match
+                    found_wikipedia_match = True
+                    logger.info(
+                        f"Found and processed one Wikipedia match. Skipping other Wikipedia results."
+                    )
+                    break
                 else:
                     logger.info(f"Wikipedia page not verified as a match: {url}")
 
-        if wikipedia_count == 0:
-            logger.info("No Wikipedia results found")
+            if not found_wikipedia_match:
+                logger.info("No matching Wikipedia results found")
+        else:
+            logger.info(
+                "Skipping Wikipedia result processing as no description is available"
+            )
 
         # Then process other results
         logger.info("Processing non-Wikipedia results")
@@ -478,7 +545,7 @@ class BlueskyMetadataChain:
         for result in web_results:
             url = result.get("url", "")
 
-            # Skip Wikipedia results as they've already been processed
+            # Skip Wikipedia results as they've already been processed or we're skipping them
             if url and "wikipedia.org/wiki/" in url:
                 continue
 
@@ -554,6 +621,7 @@ class BlueskyMetadataChain:
 
             # Add to results
             self.results.append(user_metadata)
+            print(user_metadata)
 
             # Add delay to avoid rate limiting
             if i < len(users) - 1:  # Don't delay after the last user
@@ -582,20 +650,20 @@ def main():
     """Example usage of the BlueskyMetadataChain."""
     logger.info("Starting BlueskyMetadataChain example")
 
-    # Sample user
-    user = PartialBlueskyUser(name="G Elliott Morris", handle="@gelliottmorris.com")
-    description = "Director of data analytics at ABC News + 538."
-    logger.info(f"Created sample user: {user.name} (@{user.handle})")
+    with open("user_profiles.json", "r") as f:
+        users = [
+            PartialBlueskyUser(
+                name=user.get("displayName", ""),
+                handle=user.get("handle", ""),
+                description=user.get("description", ""),
+            )
+            for user in json.load(f)
+        ]
 
-    # Initialize the chain
-    chain = BlueskyMetadataChain(output_file="sample_metadata_results.json")
+    random_users = random.sample(users, 30)
 
-    # Process the user
-    users = [user]
-    descriptions = {user.handle: description}
-    logger.info("Starting user processing")
-    chain.process_users(users, descriptions)
-    logger.info("Completed BlueskyMetadataChain example")
+    chain = BlueskyMetadataChain(output_file="metadata_results.json")
+    chain.process_users(random_users)
 
 
 if __name__ == "__main__":
