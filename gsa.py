@@ -408,6 +408,9 @@ def gather_unstructured_data(
     client = anthropic.Anthropic(api_key=os.environ.get("ANTHROPIC_API_KEY"))
 
     # Claude prompt for metadata extraction
+    # TODO: "Please check to find a match for this profile on Wikipedia, and if there is one, return the description on Wikipedia."
+    # TODO: "Also, return data from any other sources you can find about the profile, such as a podcast, a blog, a video, etc."
+    # TODO: "Get all a poster's starter packs."
     CLAUDE_PROMPT = """
     You are a precise metadata extraction assistant for social media profiles. Your task is to parse the given account information and generate an array of structured JSON metadata profiles.
 
