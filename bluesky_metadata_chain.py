@@ -1,17 +1,17 @@
 import json
 import os
-import random
 import time
-import re
 import logging
 from typing import Dict, List, Any
 import anthropic
 from dotenv import load_dotenv
 import requests
-from bs4 import BeautifulSoup
+from tqdm import tqdm
 
+from client import get_client
 from models import PartialBlueskyUser
 from brave_search import search
+from utils import write_json_lines
 
 # Configure logging
 logging.basicConfig(
@@ -74,7 +74,7 @@ class BlueskyMetadataChain:
         logger.debug(f"Sending prompt to Claude for search query generation")
         try:
             response = anthropic_client.messages.create(
-                model="claude-3-haiku-20240307",
+                model="claude-3-7-sonnet-latest",
                 max_tokens=150,
                 temperature=0,
                 system="You are an assistant that creates specific search queries to find information about people online. Return only the search query, no explanations.",
@@ -165,7 +165,7 @@ class BlueskyMetadataChain:
         """
         try:
             response = anthropic_client.messages.create(
-                model="claude-3-haiku-20240307",
+                model="claude-3-7-sonnet-latest",
                 max_tokens=5,
                 temperature=0,
                 system="You are a verification system that determines if two sources of information refer to the same person. Respond with ONLY 'YES' if 100% confident of a match, or 'NO' otherwise.",
@@ -263,7 +263,7 @@ class BlueskyMetadataChain:
             """
 
             response_structured = anthropic_client.messages.create(
-                model="claude-3-haiku-20240307",
+                model="claude-3-7-sonnet-latest",
                 max_tokens=2400,
                 temperature=0,
                 system="You are a data extraction specialist who extracts structured information about a person's expertise and professional interests from Wikipedia pages.",
@@ -293,7 +293,7 @@ class BlueskyMetadataChain:
             """
 
             response_bio = anthropic_client.messages.create(
-                model="claude-3-haiku-20240307",
+                model="claude-3-7-sonnet-latest",
                 max_tokens=300,
                 temperature=0,
                 system="You are a data extraction specialist who extracts basic biographical information from Wikipedia pages.",
@@ -342,39 +342,33 @@ class BlueskyMetadataChain:
             logger.info(f"User description: {description}")
         else:
             logger.info("No description available for this user")
+            # Skip the search entirely when no description is provided
+            logger.info("Skipping search process as no description is available")
+            return {user.handle: {"matched_results": []}}
 
         # Step 1: Create search query for general information
         logger.info("STEP 1: Creating general search query")
         query = self.create_search_query(user.name, description)
 
-        # Step 2: Create a specific Wikipedia query (only if description is available)
-        wikipedia_results = None
-        if description:
-            logger.info("STEP 2: Creating Wikipedia-specific query")
-            wikipedia_query = f"{user.name}+wikipedia"
-            logger.info(f"Wikipedia query: {wikipedia_query}")
-        else:
-            logger.info(
-                "STEP 2: Skipping Wikipedia search as no description is available"
-            )
+        # Step 2: Create a specific Wikipedia query
+        logger.info("STEP 2: Creating Wikipedia-specific query")
+        wikipedia_query = f"{user.name}+wikipedia"
+        logger.info(f"Wikipedia query: {wikipedia_query}")
 
         # Step 3: Perform Brave searches
         logger.info("STEP 3: Performing Brave searches")
         logger.info(f"Executing general search with query: {query}")
         search_results = search(query)
 
-        if description:
-            logger.info(f"Executing Wikipedia search with query: {wikipedia_query}")
-            wikipedia_results = search(wikipedia_query)
+        logger.info(f"Executing Wikipedia search with query: {wikipedia_query}")
+        wikipedia_results = search(wikipedia_query)
 
         # Step 4: Extract web results based on the API response structure
         logger.info("STEP 4: Extracting and processing search results")
         web_results = []
 
         # Process search results
-        results_to_process = [search_results]
-        if description:
-            results_to_process.append(wikipedia_results)
+        results_to_process = [search_results, wikipedia_results]
 
         for idx, results in enumerate(results_to_process):
             search_type = "General" if idx == 0 else "Wikipedia"
@@ -649,21 +643,24 @@ class BlueskyMetadataChain:
 def main():
     """Example usage of the BlueskyMetadataChain."""
     logger.info("Starting BlueskyMetadataChain example")
-
+    results = []
     with open("user_profiles.json", "r") as f:
-        users = [
-            PartialBlueskyUser(
-                name=user.get("displayName", ""),
-                handle=user.get("handle", ""),
-                description=user.get("description", ""),
-            )
-            for user in json.load(f)
-        ]
+        bsky_client = get_client()
+        users = json.load(f)
+        for user in tqdm(users, desc="Processing users"):
+            if not user.get("description"):
+                try:
+                    user["description"] = bsky_client.get_profile(user["handle"])[
+                        "description"
+                    ]
+                except Exception as e:
+                    logger.error(
+                        f"Error getting profile for {user['handle']}: {str(e)}"
+                    )
+                    user["description"] = ""
+            results.append(user)
 
-    random_users = random.sample(users, 30)
-
-    chain = BlueskyMetadataChain(output_file="metadata_results.json")
-    chain.process_users(random_users)
+    write_json_lines("user_profiles(1).json", results)
 
 
 if __name__ == "__main__":
