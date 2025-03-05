@@ -1,5 +1,6 @@
 import json
 import os
+import random
 import time
 import logging
 from typing import Dict, List, Any
@@ -324,9 +325,7 @@ class BlueskyMetadataChain:
                 "source_url": url,
             }
 
-    def process_user(
-        self, user: PartialBlueskyUser, description: str = ""
-    ) -> Dict[str, Any]:
+    def process_user(self, user: PartialBlueskyUser) -> Dict[str, Any]:
         """
         Process a single Bluesky user through the entire chain.
 
@@ -338,8 +337,8 @@ class BlueskyMetadataChain:
             Metadata object for the user
         """
         logger.info(f"Processing user: {user.name} (@{user.handle})")
-        if description:
-            logger.info(f"User description: {description}")
+        if user.description:
+            logger.info(f"User description: {user.description}")
         else:
             logger.info("No description available for this user")
             # Skip the search entirely when no description is provided
@@ -348,7 +347,7 @@ class BlueskyMetadataChain:
 
         # Step 1: Create search query for general information
         logger.info("STEP 1: Creating general search query")
-        query = self.create_search_query(user.name, description)
+        query = self.create_search_query(user.name, user.description)
 
         # Step 2: Create a specific Wikipedia query
         logger.info("STEP 2: Creating Wikipedia-specific query")
@@ -368,7 +367,7 @@ class BlueskyMetadataChain:
         web_results = []
 
         # Process search results
-        results_to_process = [search_results, wikipedia_results]
+        results_to_process = search_results + wikipedia_results
 
         for idx, results in enumerate(results_to_process):
             search_type = "General" if idx == 0 else "Wikipedia"
@@ -466,7 +465,7 @@ class BlueskyMetadataChain:
         found_wikipedia_match = False
 
         # First, check specifically for Wikipedia results (only if description is available)
-        if description:
+        if user.description:
             logger.info("Checking for Wikipedia results first")
             wikipedia_results = [
                 r for r in web_results if "wikipedia.org/wiki/" in r.get("url", "")
@@ -487,7 +486,7 @@ class BlueskyMetadataChain:
                 url = result.get("url", "")
                 logger.info(f"Checking Wikipedia URL: {url}")
 
-                if self.verify_search_result(user.name, description, result):
+                if self.verify_search_result(user.name, user.description, result):
                     logger.info(f"Wikipedia page verified as a match: {url}")
 
                     # Extract and summarize Wikipedia content
@@ -544,7 +543,7 @@ class BlueskyMetadataChain:
                 continue
 
             other_results_count += 1
-            if self.verify_search_result(user.name, description, result):
+            if self.verify_search_result(user.name, user.description, result):
                 verified_count += 1
                 logger.info(f"Verified result: {url}")
 
@@ -592,9 +591,7 @@ class BlueskyMetadataChain:
         logger.info(f"Completed processing for user: {user.name} (@{user.handle})")
         return metadata
 
-    def process_users(
-        self, users: List[PartialBlueskyUser], descriptions: Dict[str, str] = None
-    ) -> None:
+    def process_users(self, users: List[PartialBlueskyUser]) -> None:
         """
         Process multiple Bluesky users and save results to file.
 
@@ -603,15 +600,12 @@ class BlueskyMetadataChain:
             descriptions: Dictionary mapping handles to descriptions
         """
         logger.info(f"Processing {len(users)} users")
-        if descriptions is None:
-            descriptions = {}
 
         for i, user in enumerate(users):
             logger.info(
                 f"Processing user {i+1}/{len(users)}: {user.name} (@{user.handle})"
             )
-            description = descriptions.get(user.handle, "")
-            user_metadata = self.process_user(user, description)
+            user_metadata = self.process_user(user)
 
             # Add to results
             self.results.append(user_metadata)
@@ -643,24 +637,23 @@ class BlueskyMetadataChain:
 def main():
     """Example usage of the BlueskyMetadataChain."""
     logger.info("Starting BlueskyMetadataChain example")
-    results = []
     with open("user_profiles.json", "r") as f:
-        bsky_client = get_client()
         users = json.load(f)
-        for user in tqdm(users, desc="Processing users"):
-            if not user.get("description"):
-                try:
-                    user["description"] = bsky_client.get_profile(user["handle"])[
-                        "description"
-                    ]
-                except Exception as e:
-                    logger.error(
-                        f"Error getting profile for {user['handle']}: {str(e)}"
-                    )
-                    user["description"] = ""
-            results.append(user)
 
-    write_json_lines("user_profiles(1).json", results)
+    for i in range(3):
+        random_users = random.sample(
+            [
+                PartialBlueskyUser(
+                    name=user.get("displayName"),
+                    handle=user["handle"],
+                    description=user["description"],
+                )
+                for user in users
+            ],
+            10,
+        )
+        chain = BlueskyMetadataChain(output_file=f"metadata_output_{i}.json")
+        chain.process_users(random_users)
 
 
 if __name__ == "__main__":
