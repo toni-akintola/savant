@@ -7,12 +7,14 @@ from typing import Dict, List, Any
 import anthropic
 from dotenv import load_dotenv
 import requests
-from tqdm import tqdm
+from tqdm.contrib.concurrent import thread_map
+import threading
+from datetime import datetime, timedelta
 
 from client import get_client
 from models import PartialBlueskyUser
 from brave_search import search
-from utils import write_json_lines
+from utils import get_wikipedia_summary, write_json_lines
 
 # Configure logging
 logging.basicConfig(
@@ -29,6 +31,136 @@ load_dotenv()
 anthropic_client = anthropic.Anthropic(api_key=os.environ.get("ANTHROPIC_API_KEY"))
 
 
+class TokenRateLimiter:
+    """
+    Manages token rate limiting for API calls to stay within usage limits.
+    Implements a sliding window approach to track token usage over time.
+    """
+
+    def __init__(self, tokens_per_minute: int = 200000):
+        """
+        Initialize the token rate limiter.
+
+        Args:
+            tokens_per_minute: Maximum number of tokens allowed per minute
+        """
+        self.tokens_per_minute = tokens_per_minute
+        self.usage_window = []  # List of (timestamp, token_count) tuples
+        self.lock = threading.Lock()
+        self.logger = logging.getLogger("TokenRateLimiter")
+        self.logger.info(
+            f"Initialized token rate limiter with {tokens_per_minute} tokens per minute limit"
+        )
+
+    def _clean_old_usage(self):
+        """Remove usage data older than 1 minute from the current time."""
+        now = datetime.now()
+        one_minute_ago = now - timedelta(minutes=1)
+
+        with self.lock:
+            self.usage_window = [
+                (ts, count) for ts, count in self.usage_window if ts > one_minute_ago
+            ]
+
+    def add_tokens(self, token_count: int):
+        """
+        Record token usage.
+
+        Args:
+            token_count: Number of tokens used
+        """
+        with self.lock:
+            self.usage_window.append((datetime.now(), token_count))
+
+    def get_current_usage(self) -> int:
+        """
+        Get the total token usage in the last minute.
+
+        Returns:
+            Total token count used in the last minute
+        """
+        self._clean_old_usage()
+
+        with self.lock:
+            return sum(count for _, count in self.usage_window)
+
+    def wait_if_needed(self, planned_token_count: int) -> float:
+        """
+        Wait if adding the planned token count would exceed the rate limit.
+
+        Args:
+            planned_token_count: Number of tokens planned to be used
+
+        Returns:
+            Time waited in seconds
+        """
+        start_wait = time.time()
+        wait_time = 0
+
+        while True:
+            current_usage = self.get_current_usage()
+            remaining_tokens = self.tokens_per_minute - current_usage
+
+            if planned_token_count <= remaining_tokens:
+                if wait_time > 0:
+                    self.logger.info(
+                        f"Waited {wait_time:.2f}s for token rate limit. Current usage: {current_usage}/{self.tokens_per_minute}"
+                    )
+                return wait_time
+
+            # Calculate how long to wait
+            # Find the oldest usage entry that would free up enough tokens
+            with self.lock:
+                if not self.usage_window:
+                    break
+
+                tokens_to_free = planned_token_count - remaining_tokens
+                cumulative_freed = 0
+                wait_until = None
+
+                for i, (ts, count) in enumerate(self.usage_window):
+                    cumulative_freed += count
+                    if cumulative_freed >= tokens_to_free:
+                        # Wait until this entry expires (1 minute after its timestamp)
+                        wait_until = ts + timedelta(minutes=1)
+                        break
+
+            if wait_until:
+                now = datetime.now()
+                if wait_until > now:
+                    sleep_time = (wait_until - now).total_seconds()
+                    self.logger.info(
+                        f"Rate limit reached ({current_usage}/{self.tokens_per_minute} tokens used). Waiting {sleep_time:.2f}s"
+                    )
+                    time.sleep(
+                        min(sleep_time, 5)
+                    )  # Wait at most 5 seconds at a time to allow for rechecks
+                    wait_time = time.time() - start_wait
+                else:
+                    # This should be freed already, but we'll recheck
+                    self._clean_old_usage()
+            else:
+                # If we can't determine a specific wait time, wait a short time and recheck
+                time.sleep(1)
+                wait_time = time.time() - start_wait
+
+        return wait_time
+
+    def estimate_tokens(self, text: str) -> int:
+        """
+        Estimate the number of tokens in a text string.
+        This is a simple approximation - Claude uses BPE tokenization which is more complex.
+
+        Args:
+            text: Text to estimate token count for
+
+        Returns:
+            Estimated token count
+        """
+        # Simple approximation: 1 token ≈ 4 characters for English text
+        return len(text) // 4
+
+
 class BlueskyMetadataChain:
     def __init__(self, output_file: str = "bluesky_metadata_results.json"):
         """
@@ -39,6 +171,7 @@ class BlueskyMetadataChain:
         """
         self.output_file = output_file
         self.results = []
+        self.token_limiter = TokenRateLimiter(tokens_per_minute=200000)
         logger.info(f"Initialized BlueskyMetadataChain with output file: {output_file}")
 
     def create_search_query(self, name: str, description: str = "") -> str:
@@ -164,7 +297,17 @@ class BlueskyMetadataChain:
         
         Respond with ONLY "YES" if you are 100% confident it's the same person, or "NO" if you are not that confident.
         """
+
+        # Estimate token count
+        token_count = self.token_limiter.estimate_tokens(prompt)
+
         try:
+            # Apply rate limiting
+            logger.info(
+                f"Verifying search result with Claude (est. {token_count} tokens)"
+            )
+            self.token_limiter.wait_if_needed(token_count)
+
             response = anthropic_client.messages.create(
                 model="claude-3-7-sonnet-latest",
                 max_tokens=5,
@@ -172,6 +315,9 @@ class BlueskyMetadataChain:
                 system="You are a verification system that determines if two sources of information refer to the same person. Respond with ONLY 'YES' if 100% confident of a match, or 'NO' otherwise.",
                 messages=[{"role": "user", "content": prompt}],
             )
+
+            # Record token usage
+            self.token_limiter.add_tokens(token_count)
 
             # Check if response is affirmative
             result_matches = response.content[0].text.strip().upper() == "YES"
@@ -183,7 +329,7 @@ class BlueskyMetadataChain:
             logger.error(f"Error verifying search result: {str(e)}")
             return False
 
-    def extract_wikipedia_summary(self, url: str, name: str) -> Dict[str, str]:
+    def extract_wikipedia_summary(self, url: str, name: str) -> str:
         """
         Extract and summarize content from a Wikipedia page, focusing on expertise and interests.
 
@@ -194,144 +340,14 @@ class BlueskyMetadataChain:
         Returns:
             Dictionary with summary and other extracted information as raw strings
         """
-        logger.info(f"Extracting Wikipedia summary from: {url}")
-        try:
-            # Fetch the Wikipedia page
-            headers = {
-                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
-            }
-            logger.debug(f"Fetching Wikipedia page content")
-            response = requests.get(url, headers=headers, timeout=10)
-            response.raise_for_status()
-
-            # Get the HTML content
-            html_content = response.text
-            logger.debug(f"Retrieved Wikipedia page: {len(html_content)} characters")
-
-            # Use Claude to extract and summarize the content with focus on expertise
-            logger.info(f"Generating expertise summary using Claude")
-            prompt = f"""
-            I have the HTML content of a Wikipedia page about {name}. Please analyze this content and provide a rich, comprehensive summary focused on this person's expertise, interests, and professional domains.
-            
-            Focus specifically on:
-            1. Areas of expertise and specialized knowledge
-            2. Professional topics they regularly engage with
-            3. Research interests or academic focus areas
-            4. Methodologies, frameworks, or approaches they're known for
-            5. Key ideas, theories, or concepts they've developed or champion
-            6. Current projects or ongoing work
-            7. Intellectual influences and how they've shaped their thinking
-            
-            Rather than just biographical details, I want to understand what makes this person an authority in their field and what specific topics they're deeply knowledgeable about.
-            
-            Provide a well-structured summary of 400-600 words that would help someone understand this person's intellectual and professional landscape.
-            
-            Here's the HTML content:
-            {html_content[:50000]}  # Limit content to avoid token limits
-            """
-
-            response = anthropic_client.messages.create(
-                model="claude-3-7-sonnet-latest",
-                max_tokens=2000,
-                temperature=0,
-                system="You are a skilled researcher who analyzes and summarizes a person's expertise, intellectual contributions, and professional interests from their Wikipedia page. Focus on their domain knowledge rather than just biographical details.",
-                messages=[{"role": "user", "content": prompt}],
-            )
-
-            # Extract the expertise summary as raw text
-            expertise_summary = response.content[0].text.strip()
-            logger.info(
-                f"Generated expertise summary: {len(expertise_summary)} characters"
-            )
-            logger.debug(f"Summary excerpt: {expertise_summary[:100]}...")
-
-            # Get additional structured information about their expertise
-            logger.info(f"Extracting structured expertise data")
-            prompt_structured = f"""
-            Based on the Wikipedia page for {name}, please create a description of {name}, focusing on the following specific information in a structured format:
-            
-            1. Primary field(s) of expertise
-            2. Key topics of interest
-            3. Notable works or publications
-            4. Professional affiliations
-            5. Methodologies or approaches they're known for
-            6. Audience or communities they engage with
-            7. Tools, technologies, or platforms they're associated with
-        
-            
-            Here's the HTML content:
-            {html_content[:30000]}  # Limit content to avoid token limits
-            """
-
-            response_structured = anthropic_client.messages.create(
-                model="claude-3-7-sonnet-latest",
-                max_tokens=2400,
-                temperature=0,
-                system="You are a data extraction specialist who extracts structured information about a person's expertise and professional interests from Wikipedia pages.",
-                messages=[{"role": "user", "content": prompt_structured}],
-            )
-
-            # Store the structured data as raw text
-            structured_text = response_structured.content[0].text.strip()
-            logger.info(
-                f"Generated structured expertise data: {len(structured_text)} characters"
-            )
-            logger.debug(f"Structured data excerpt: {structured_text[:100]}...")
-
-            # Also get basic biographical info for context
-            logger.info(f"Extracting basic biographical data")
-            prompt_bio = f"""
-            Based on the Wikipedia page for {name}, please extract only the following basic biographical information:
-            
-            1. Birth date (if available)
-            2. Nationality/country
-            3. Current position/role
-            4. Education
-            
-            
-            Here's the HTML content:
-            {html_content[:20000]}  # Limit content to avoid token limits
-            """
-
-            response_bio = anthropic_client.messages.create(
-                model="claude-3-7-sonnet-latest",
-                max_tokens=300,
-                temperature=0,
-                system="You are a data extraction specialist who extracts basic biographical information from Wikipedia pages.",
-                messages=[{"role": "user", "content": prompt_bio}],
-            )
-
-            # Store the biographical data as raw text
-            bio_text = response_bio.content[0].text.strip()
-            logger.info(f"Generated biographical data: {len(bio_text)} characters")
-            logger.debug(f"Biographical data excerpt: {bio_text[:100]}...")
-
-            wikipedia_data = {
-                "expertise_summary": expertise_summary,
-                "expertise_data_raw": structured_text,
-                "biographical_data_raw": bio_text,
-                "source_url": url,
-            }
-
-            logger.info(f"Completed Wikipedia extraction for {name}")
-            return wikipedia_data
-
-        except Exception as e:
-            logger.error(f"Error extracting Wikipedia summary: {str(e)}")
-            return {
-                "expertise_summary": f"Failed to extract summary: {str(e)}",
-                "expertise_data_raw": "",
-                "biographical_data_raw": "",
-                "source_url": url,
-            }
+        return get_wikipedia_summary(name)
 
     def process_user(self, user: PartialBlueskyUser) -> Dict[str, Any]:
         """
-        Process a single Bluesky user through the entire chain.
+        Process a single Bluesky user through the entire chain, focusing only on Wikipedia.
 
         Args:
             user: PartialBlueskyUser object
-            description: User's self-description on Bluesky
 
         Returns:
             Metadata object for the user
@@ -345,99 +361,35 @@ class BlueskyMetadataChain:
             logger.info("Skipping search process as no description is available")
             return {user.handle: {"matched_results": []}}
 
-        # Step 1: Create search query for general information
-        logger.info("STEP 1: Creating general search query")
-        query = self.create_search_query(user.name, user.description)
-
-        # Step 2: Create a specific Wikipedia query
-        logger.info("STEP 2: Creating Wikipedia-specific query")
+        logger.info("STEP 1: Creating Wikipedia-specific query")
         wikipedia_query = f"{user.name}+wikipedia"
         logger.info(f"Wikipedia query: {wikipedia_query}")
 
-        # Step 3: Perform Brave searches
-        logger.info("STEP 3: Performing Brave searches")
-        logger.info(f"Executing general search with query: {query}")
-        search_results = search(query)
-
         logger.info(f"Executing Wikipedia search with query: {wikipedia_query}")
-        wikipedia_results = search(wikipedia_query)
+        wikipedia_results, _ = search(wikipedia_query, count=3)
 
-        # Step 4: Extract web results based on the API response structure
-        logger.info("STEP 4: Extracting and processing search results")
+        logger.info("STEP 2: Extracting and processing Wikipedia results")
         web_results = []
 
         # Process search results
-        results_to_process = search_results + wikipedia_results
+        if "web" in wikipedia_results and "results" in wikipedia_results["web"]:
+            web_count = len(wikipedia_results["web"]["results"])
+            logger.info(f"Found {web_count} web results in Wikipedia search")
+            web_results.extend(wikipedia_results["web"]["results"])
 
-        for idx, results in enumerate(results_to_process):
-            search_type = "General" if idx == 0 else "Wikipedia"
-            logger.info(f"Processing {search_type} search results")
+        # Mixed results
+        if "mixed" in wikipedia_results:
+            mixed_results = wikipedia_results.get("mixed", {}).get("results", [])
+            mixed_count = len(mixed_results)
+            logger.info(f"Found {mixed_count} mixed results in Wikipedia search")
 
-            try:
-                # Direct web results
-                if "web" in results and "results" in results["web"]:
-                    web_count = len(results["web"]["results"])
-                    logger.info(
-                        f"Found {web_count} web results in {search_type} search"
-                    )
-                    web_results.extend(results["web"]["results"])
+            web_from_mixed = 0
+            for item in mixed_results:
+                if item.get("type") == "web" and "content" in item:
+                    web_results.append(item["content"])
+                    web_from_mixed += 1
 
-                # Mixed results
-                if "mixed" in results:
-                    mixed_results = results.get("mixed", {}).get("results", [])
-                    mixed_count = len(mixed_results)
-                    logger.info(
-                        f"Found {mixed_count} mixed results in {search_type} search"
-                    )
-
-                    web_from_mixed = 0
-                    for item in mixed_results:
-                        if item.get("type") == "web" and "content" in item:
-                            web_results.append(item["content"])
-                            web_from_mixed += 1
-
-                    logger.info(
-                        f"Extracted {web_from_mixed} web results from mixed results"
-                    )
-
-                # News results
-                if "news" in results and "results" in results["news"]:
-                    news_results = results["news"]["results"]
-                    news_count = len(news_results)
-                    logger.info(
-                        f"Found {news_count} news results in {search_type} search"
-                    )
-
-                    for news in news_results:
-                        web_results.append(
-                            {
-                                "title": news.get("title", ""),
-                                "description": news.get("description", ""),
-                                "url": news.get("url", ""),
-                            }
-                        )
-
-                # Discussions results
-                if "discussions" in results and "results" in results["discussions"]:
-                    discussion_results = results["discussions"]["results"]
-                    discussion_count = len(discussion_results)
-                    logger.info(
-                        f"Found {discussion_count} discussion results in {search_type} search"
-                    )
-
-                    for discussion in discussion_results:
-                        web_results.append(
-                            {
-                                "title": discussion.get("title", ""),
-                                "description": discussion.get("description", ""),
-                                "url": discussion.get("url", ""),
-                            }
-                        )
-            except Exception as e:
-                logger.error(f"Error processing {search_type} search results: {str(e)}")
-                logger.debug(
-                    f"Search results structure: {json.dumps(results, indent=2)[:500]}..."
-                )
+            logger.info(f"Extracted {web_from_mixed} web results from mixed results")
 
         # Remove duplicate results based on URL
         logger.info("Removing duplicate results")
@@ -458,138 +410,68 @@ class BlueskyMetadataChain:
             logger.warning(f"No search results found for {user.handle}")
             return {user.handle: {"matched_results": []}}
 
-        # Step 5: Verify each result and prioritize Wikipedia (only if description is available)
-        logger.info("STEP 5: Verifying search results and extracting Wikipedia data")
+        # Step 3: Filter for Wikipedia results only
+        logger.info("STEP 3: Filtering for Wikipedia results only")
+        wikipedia_results = [
+            r for r in web_results if "wikipedia.org/wiki/" in r.get("url", "")
+        ]
+        logger.info(f"Found {len(wikipedia_results)} Wikipedia URLs to check")
+
+        if not wikipedia_results:
+            logger.info("No Wikipedia results found")
+            return {user.handle: {"matched_results": []}}
+
+        # Sort Wikipedia results to prioritize those that seem most relevant to the person
+        wikipedia_results.sort(
+            key=lambda r: sum(
+                part.lower() in r.get("title", "").lower()
+                for part in user.name.lower().split()
+            ),
+            reverse=True,
+        )
+
+        # Step 4: Verify and process Wikipedia results
+        logger.info("STEP 4: Verifying and processing Wikipedia results")
         matched_results = []
-        wikipedia_data = None
-        found_wikipedia_match = False
 
-        # First, check specifically for Wikipedia results (only if description is available)
-        if user.description:
-            logger.info("Checking for Wikipedia results first")
-            wikipedia_results = [
-                r for r in web_results if "wikipedia.org/wiki/" in r.get("url", "")
-            ]
-            logger.info(f"Found {len(wikipedia_results)} Wikipedia URLs to check")
-
-            # Sort Wikipedia results to prioritize those that seem most relevant to the person
-            # This helps ensure we process the most likely match first
-            wikipedia_results.sort(
-                key=lambda r: sum(
-                    part.lower() in r.get("title", "").lower()
-                    for part in user.name.lower().split()
-                ),
-                reverse=True,
-            )
-
-            for result in wikipedia_results:
-                url = result.get("url", "")
-                logger.info(f"Checking Wikipedia URL: {url}")
-
-                if self.verify_search_result(user.name, user.description, result):
-                    logger.info(f"Wikipedia page verified as a match: {url}")
-
-                    # Extract and summarize Wikipedia content
-                    logger.info(f"Extracting Wikipedia content")
-                    wikipedia_data = self.extract_wikipedia_summary(url, user.name)
-
-                    # Add to matched results with Wikipedia data directly embedded
-                    matched_results.append(
-                        {
-                            "title": result.get("title", ""),
-                            "description": result.get("description", ""),
-                            "url": url,
-                            "source_type": "wikipedia",
-                            "wikipedia_data": {
-                                "expertise_summary": wikipedia_data[
-                                    "expertise_summary"
-                                ],
-                                "expertise_data_raw": wikipedia_data[
-                                    "expertise_data_raw"
-                                ],
-                                "biographical_data_raw": wikipedia_data[
-                                    "biographical_data_raw"
-                                ],
-                            },
-                        }
-                    )
-
-                    # Set flag to indicate we found a Wikipedia match
-                    found_wikipedia_match = True
-                    logger.info(
-                        f"Found and processed one Wikipedia match. Skipping other Wikipedia results."
-                    )
-                    break
-                else:
-                    logger.info(f"Wikipedia page not verified as a match: {url}")
-
-            if not found_wikipedia_match:
-                logger.info("No matching Wikipedia results found")
-        else:
-            logger.info(
-                "Skipping Wikipedia result processing as no description is available"
-            )
-
-        # Then process other results
-        logger.info("Processing non-Wikipedia results")
-        other_results_count = 0
-        verified_count = 0
-
-        for result in web_results:
+        for result in wikipedia_results:
             url = result.get("url", "")
+            logger.info(f"Checking Wikipedia URL: {url}")
 
-            # Skip Wikipedia results as they've already been processed or we're skipping them
-            if url and "wikipedia.org/wiki/" in url:
-                continue
-
-            other_results_count += 1
             if self.verify_search_result(user.name, user.description, result):
-                verified_count += 1
-                logger.info(f"Verified result: {url}")
+                logger.info(f"Wikipedia page verified as a match: {url}")
 
-                # Determine source type
-                source_type = "other"
-                if "linkedin.com" in url:
-                    source_type = "linkedin"
-                elif "twitter.com" in url or "x.com" in url:
-                    source_type = "twitter"
-                elif "github.com" in url:
-                    source_type = "github"
-                elif "medium.com" in url or "substack.com" in url or "blog" in url:
-                    source_type = "blog"
-                elif ".edu" in url:
-                    source_type = "academic"
-                elif (
-                    "news" in url
-                    or "nytimes.com" in url
-                    or "washingtonpost.com" in url
-                    or "cnn.com" in url
-                ):
-                    source_type = "news"
+                # Extract and summarize Wikipedia content
+                logger.info(f"Extracting Wikipedia content")
+                wikipedia_data = self.extract_wikipedia_summary(url, user.name)
 
-                logger.info(f"Categorized as: {source_type}")
-
-                # Store the matched result
+                # Add to matched results with Wikipedia data directly embedded
                 matched_results.append(
                     {
                         "title": result.get("title", ""),
                         "description": result.get("description", ""),
                         "url": url,
-                        "source_type": source_type,
+                        "source_type": "wikipedia",
+                        "summary": wikipedia_data,
                     }
                 )
 
-        logger.info(
-            f"Processed {other_results_count} non-Wikipedia results, verified {verified_count}"
-        )
-        logger.info(f"Total matched results: {len(matched_results)}")
+                logger.info(
+                    f"Found and processed one Wikipedia match. Skipping other Wikipedia results."
+                )
+                break
+            else:
+                logger.info(f"Wikipedia page not verified as a match: {url}")
 
         # Create the metadata object
-        logger.info("STEP 6: Creating final metadata object")
-        metadata = {user.handle: {"matched_results": matched_results}}
+        logger.info("STEP 5: Creating final metadata object")
+        metadata = {"matched_results": matched_results}
 
         logger.info(f"Completed processing for user: {user.name} (@{user.handle})")
-        return metadata
+        result = user.to_dict()
+        result["metadata"] = metadata
+        self.results.append(result)
+        return result
 
     def process_users(self, users: List[PartialBlueskyUser]) -> None:
         """
@@ -626,8 +508,8 @@ class BlueskyMetadataChain:
             f"Saving results for {len(self.results)} users to {self.output_file}"
         )
         try:
-            with open(self.output_file, "w") as f:
-                json.dump(self.results, f, indent=2)
+            with open(self.output_file, "w+") as f:
+                write_json_lines(self.output_file, self.results)
 
             logger.info(f"Successfully saved metadata to {self.output_file}")
         except Exception as e:
@@ -638,22 +520,21 @@ def main():
     """Example usage of the BlueskyMetadataChain."""
     logger.info("Starting BlueskyMetadataChain example")
     with open("user_profiles.json", "r") as f:
-        users = json.load(f)
+        users = [
+            PartialBlueskyUser(
+                name=user.get("displayName"),
+                handle=user["handle"],
+                description=user["description"],
+            )
+            for user in json.load(f)
+        ]
 
-    for i in range(3):
-        random_users = random.sample(
-            [
-                PartialBlueskyUser(
-                    name=user.get("displayName"),
-                    handle=user["handle"],
-                    description=user["description"],
-                )
-                for user in users
-            ],
-            10,
-        )
-        chain = BlueskyMetadataChain(output_file=f"metadata_output_{i}.json")
-        chain.process_users(random_users)
+    chain = BlueskyMetadataChain(output_file="final_profiles.json")
+
+    # Use fewer workers to avoid overwhelming the rate limiter
+    thread_map(chain.process_user, users, max_workers=10)
+
+    chain.save_results()
 
 
 if __name__ == "__main__":
