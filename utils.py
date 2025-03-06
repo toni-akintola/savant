@@ -1,6 +1,7 @@
 import json
-from typing import List, Dict, Any, Optional
+from typing import List, Dict, Any, Optional, Union
 import os
+import wikipediaapi
 
 
 def load_bluesky_users(
@@ -38,6 +39,33 @@ def load_bluesky_users(
 
     except json.JSONDecodeError:
         raise json.JSONDecodeError(f"Invalid JSON in file: {filepath}", "", 0)
+
+
+def write_json_lines(filepath: str, data: Union[dict, List[dict]]):
+    """
+    Writes a single JSON object or a list of JSON objects to a file, ensuring each object is on a single line.
+
+    Args:
+        filepath (str): The path to the output file.
+        data (Union[dict, List[dict]]): A JSON object or a list of JSON objects to write.
+    """
+    try:
+        with open(filepath, "w") as f:
+            if isinstance(data, list):
+                f.write("[\n")
+                for i, item in enumerate(data):
+                    f.write(
+                        "  "
+                        + json.dumps(item)
+                        + ("," if i < len(data) - 1 else "")
+                        + "\n"
+                    )
+                f.write("]\n")
+            else:
+                f.write(json.dumps(data) + "\n")
+        print(f"Successfully wrote JSON data to {filepath}")
+    except Exception as e:
+        print(f"Error writing to {filepath}: {str(e)}")
 
 
 def get_top_users(count: int = 500) -> List[Dict[str, Any]]:
@@ -111,30 +139,19 @@ def get_user_stats() -> Dict[str, Any]:
     }
 
 
-if __name__ == "__main__":
-    # Example usage
-    try:
-        # Load all users
-        all_users = load_bluesky_users()
-        print(f"Loaded {len(all_users)} users")
+def get_wikipedia_summary(name: str) -> str:
+    """
+    Get a summary of a Wikipedia page for a given name.
 
-        # Get top 10 users
-        top_10 = get_top_users(10)
-        print("\nTop 10 users by follower count:")
-        for user in top_10:
-            print(
-                f"#{user['rank']}: {user['name']} (@{user['handle']}) - {user['followers']} followers"
-            )
+    Args:
+        name: The name of the person to search for on Wikipedia
 
-        # Get stats
-        stats = get_user_stats()
-        print("\nUser statistics:")
-        for key, value in stats.items():
-            if isinstance(value, float):
-                print(f"{key}: {value:.2f}")
-            else:
-                print(f"{key}: {value}")
-
-    except FileNotFoundError as e:
-        print(f"Error: {e}")
-        print("Run bluesky_parser.py first to generate the user data file.")
+    Returns:
+        A summary of the Wikipedia page for the given name
+    """
+    wiki_wiki = wikipediaapi.Wikipedia(user_agent="filter-bot", language="en")
+    page = wiki_wiki.page(name)
+    if page.exists():
+        return page.summary
+    else:
+        return f"No Wikipedia page found for {name}"
