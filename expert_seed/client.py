@@ -1,9 +1,14 @@
+import json
 from atproto import Client, client_utils
 from dotenv import load_dotenv
 import os
 import time
 import requests
 from enum import Enum
+
+from tqdm.contrib.concurrent import thread_map
+
+from utils import write_json_lines
 
 load_dotenv()
 
@@ -108,3 +113,28 @@ def get_posts_public_api(
     response = requests.get(url)
     response.raise_for_status()  # Raise an exception for bad responses
     return response.json()["feed"]
+
+
+def get_lists_public_api(handle: str) -> list[dict]:
+    """
+    Get all lists of an account using the public Bluesky API via requests
+    """
+    url = f"{PUBLIC_API_URL}/xrpc/app.bsky.graph.getLists?actor={handle}"
+    response = requests.get(url)
+    response.raise_for_status()
+    print(response.json())  # Raise an exception for bad responses
+    return response.json()["lists"]
+
+
+if __name__ == "__main__":
+
+    def process_user(user: dict):
+        user["posts"] = get_posts_public_api(user["handle"])
+        return user
+
+    users = json.load(open("final_profiles.json"))
+    for user in thread_map(process_user, users, max_workers=10):
+        print(user["handle"])
+        user["posts"] = get_posts_public_api(user["handle"])
+
+    write_json_lines("final_profiles_with_posts_and_lists.json", users)
