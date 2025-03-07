@@ -1,80 +1,42 @@
-# TECH: quantum computing
-{"alt_forms": ["qubits", "quantumcomputing"], "type": "basic", "name": "quantum computing"}
-# TECH: artificial intelligence
-{"alt_forms": ["artificial intel", "人工智能", "inteligencia artificial", "künstliche intelligenz", "人工知能", "artificialintelligence", "machine intelligence", "intelligenza artificiale", "inteligência artificial", "intelligence artificielle"], "type": "basic", "name": "artificial intelligence"}
-# TECH: bitcoin
-{"alt_forms": ["ビットコイン", "bitcoins", "比特币", "bitcoin foundation"], "type": "basic", "name": "bitcoin"}
-# TECH: python
-{"alt_forms": ["python programming language", "python software", "python programming"], "type": "basic", "name": "python"}
-# TECH: cybersecurity
-{"alt_forms": ["网络安全", "cíber segurança", "cyberspace security", "cyber security standards", "onlinesicherheit", "cybersecurity policy", "cybersecurity standards", "seguridad cibernética", "サイバーセキュリティ", "sicurezza informatica", "cyber security", "cyber-sécurité"], "type": "basic", "name": "cybersecurity"}
-# POLITICS: US politics
-{"alt_forms": ["american politics", "u s politics", "united states politics", "usa politics", "uspolitics"], "type": "basic", "name": "us politics"}
-# ACTIVISM: women empowerment
-{"alt_forms": ["girlpower", "女性のエンパワーメント", "赋予妇女权力", "women empowering women", "girl power", "women power", "l'autonomisation des femmes", "emancipazione femminile", "empower women", "womenempowerment", "empoderamiento de las mujeres", "women empowerment", "empoderamento das mulheres", "empowerwomen", "frauenförderung"], "type": "basic", "name": "women's empowerment"}
-# ACTIVISM: Climate Change
-{"alt_forms": ["global climate change", "das alterações climáticas", "climatechange", "気候変動", "climate talks", "klimawandel", "changement climatique", "global warming", "climate change mitigation", "climate action", "climate crisis", "气候变化", "climate change debate", "cambiamento climatico", "cambio climático", "globalwarming"], "type": "basic", "name": "climate change"}
-# FINANCE: venture capital
-{"alt_forms": ["venture industry", "capital-risque", "vc backed", "capital de risco", "venture fund", "startup funding", "venture capitalist", "ベンチャーキャピタル", "vc fund", "venture backed", "venture capitalism", "venturecapital", "risikokapital", "capital de riesgo", "vc funded", "风险投资", "capitale di rischio", "venture capitalists", "venture funding"], "type": "basic", "name": "venture capital"}
-# FINANCE: fintech
-{"alt_forms": ["金融科技", "financial technology", "financial technologies", "フィンテック", "financial services software"], "type": "basic", "name": "fintech"}
-# FINANCE: mergers and acquisitions
-{"alt_forms": ["merger and acquisitions", "acquisitions", "并购", "合併と買収", "fusions et acquisitions", "fusioni e acquisizioni", "fusiones y adquisiciones", "fusionen und übernahmen", "m & a", "has acquired", "closed acquisition of", "mergers & acquisitions", "fusões e aquisições", "merger and acquisition", "mergers"], "type": "basic", "name": "mergers and acquisitions"}
-# SCIENCE: biotechnology
-{"alt_forms": ["biotecnología", "biotech", "バイオテクノロジー", "biotechnologie", "biotecnologia", "bioindustry", "生物技术"], "type": "basic", "name": "biotechnology"}
-# SCIENCE: Nanotechnology
-{"alt_forms": ["nanotecnología", "nanotechnologie", "nanotech", "nanoscience", "纳米技术", "nano tech", "nanocrystals", "ナノテクノロジー", "nanotecnologia"], "type": "basic", "name": "nanotechnology"}
-# SCIENCE: Pharmaceuticals
-{"alt_forms": ["pharmaceuticals industry", "pharmaceutical", "pharma", "industrie pharmaceutique", "industria farmaceutica", "pharmaceutical industries", "indústria farmacêutica", "pharmaceuticals", "製薬業界", "farmaceuticals", "pharmaceutical drug", "pharmaindustrie", "pharma industry", "industria farmacéutica", "制药业"], "type": "basic", "name": "pharmaceutical industry"}
-# SCIENCE: Microbiology
-{"alt_forms": ["microbiologists", "微生物学", "mikrobiologie", "microorganism", "microbes", "microbiologia", "microbiología", "microbe", "microbiologist", "microbiologie", "microorganisms"], "type": "basic", "name": "microbiology"}
-# SCIENCE: Robotics
-{"alt_forms": ["robotics engineer", "robótica", "robotic", "机器人", "robotique", "robotics engineers", "robotica", "ロボット工学", "robotik"], "type": "basic", "name": "robotics"}
-# MEDICINE: Patient Safety
-{"alt_forms": ["seguridad del paciente", "medical regulations", "患者の安全", "medical regulators", "患者安全", "segurança do paciente", "la sicurezza del paziente", "patient safety policy", "sécurité du patient", "medical regulation", "patientsafety", "patientensicherheit"], "type": "basic", "name": "patient safety"}
-# MEDICINE: Emergency Medicine
-{"alt_forms": ["notfallmedizin", "emergencymedicine", "emergencymed", "emergency medicine journals", "medicina de emergencia", "accident and emergency medicine", "救急医療", "medicina d'emergenza", "emergency physicians", "emergency physician", "emergency medicine physician", "médecine d'urgence", "emergency medical aid", "emergency med", "emergency care", "emergency medicine journal", "medicamento de emergência", "急诊医学", "emergency medicine physicians"], "type": "basic", "name": "emergency medicine"}
-# MEDICINE: Orthopedics
-{"alt_forms": ["ortopedía", "orthopaedic surgery", "orthopaedic", "orthopedic medicine", "orthopédie", "骨科", "整形外科", "orthopädie", "orthopedic", "orthopaedic medicine", "orthopaedics", "ortopedia", "orthopedic surgery"], "type": "basic", "name": "orthopedics"}
-# MEDICINE: Mental Health
-{"alt_forms": ["メンタルヘルス", "mentalhealthmatters", "mental wellness", "mentalhealth", "精神健康", "mental health care", "mental health professional", "mental health counseling", "mental illness", "santé mentale", "salud mental", "mental health professionals", "salute mentale", "saúde mental", "psychische gesundheit", "mentalhealthrevolution"], "type": "basic", "name": "mental health"}
-# MEDICINE: Pediatrics
-{"alt_forms": ["pädiatrie", "pediatric", "pediatricians", "pediatrics journals", "paediatricians", "stateofthechild", "pediatricresearch", "儿科", "pédiatrie", "pediatrician", "paediatrics", "pediatría", "pediatria", "小児科", "paediatrician"], "type": "basic", "name": "pediatrics"}
-# MEDICINE: Veterinary Medicine
-{"alt_forms": ["veterinary physicians", "veterinary science", "vetmedicine", "veterinary", "tierheilkunde", "vetmed", "médecine vétérinaire", "veterinary sciences", "獣医学", "veterinarian", "veterinarians", "老兵专用医药", "veterinary physician", "medicina veterinária", "animal health", "medicina veterinaria", "veterinary practice"], "type": "basic", "name": "veterinary medicine"}
-# MEDICINE: Medical Devices
-{"alt_forms": ["medicaldevices", "medizinische geräte", "équipement médical", "meddevices", "医疗设备", "meddevice", "medicaldevice", "医療機器", "dispositivi medici", "dispositivos médicos", "medical device"], "type": "basic", "name": "medical devices"}
-# DISEASES: Alzheimer's Disease
-{"alt_forms": ["la maladie d'alzheimer", "enfermedad de alzheimer", "alzheimer disease", "alzheimer's and dementia", "alzheimer's", "阿尔茨海默氏病", "alzheimers", "alzheimer-erkrankung", "doença de alzheimer", "alzheimer", "アルツハイマー病", "alzheimer's dementia", "il morbo di alzheimer"], "type": "basic", "name": "alzheimer's disease"}
-# DISEASES: Type 1 Diabetes
-{"alt_forms": ["jugendlicher diabetes", "diabete giovanile", "diabetes juvenil", "type1 diabetes", "type1diabetes", "青少年糖尿病", "type i diabetes", "diabetes 1", "diabète juvénile", "diabetes type 1", "juvenile diabetes", "diabetes1", "若年性糖尿病"], "type": "basic", "name": "type 1 diabetes"}
-# DISEASES: PTSD
-{"alt_forms": ["心的外傷後ストレス障害", "创伤后应激障碍", "disturbo post traumatico da stress", "transtorno de estresse pós-traumático", "posttraumatic stress disorder", "trastorno de estrés postraumático", "trouble de stress post-traumatique", "ptsd", "posttraumatische belastungsstörung"], "type": "basic", "name": "post traumatic stress disorder"}
-# SOCIAL: Anthropology
-{"alt_forms": ["ethnology", "antropología", "ethnologists", "anthropologie", "anthropologists", "antropologia", "人類学", "ethnologist", "人类学", "anthropologist"], "type": "basic", "name": "anthropology"}
-# SOCIAL: Philosophy
-{"alt_forms": ["history of philosophy", "filosofía", "philosophical schools", "philosophical methods", "philosophical logic", "philosophie", "philosophers", "哲学", "philosophical questions", "filosofia", "philosophical traditions", "philosophical inquiries"], "type": "basic", "name": "philosophy"}
-# SOCIAL: Archaeology
-{"alt_forms": ["考古学", "archéologie", "arqueologia", "archeology", "arqueología", "archäologie", "archeologia", "archaeologists", "archaeologist"], "type": "basic", "name": "archaeology"}
-# SOCIAL: Urban Agriculture
-{"alt_forms": ["agricoltura urbana", "urban farming", "都市農業", "urban farms", "urban farm", "urbanagriculture", "urbanfarming", "urbane landwirtschaft", "都市农业", "urban farmer", "agricultura urbana", "agriculture urbaine"], "type": "basic", "name": "urban agriculture"}
-# SOCIAL: Political Science
-{"alt_forms": ["pol science", "政治学", "science politique", "political studies", "politikwissenschaft", "polisci", "ciencias políticas", "politicalscience", "ciência política", "poli sci", "scienze politiche"], "type": "basic", "name": "political science"}
-# SOCIAL: Urban Planning
-{"alt_forms": ["planejamento urbano", "城市规划", "urban development", "regional planning", "pianificazione urbana", "urbanplanning", "town planning", "rural planning", "urbanismo", "aménagement urbain", "urban design", "urban planner", "cityplanning", "urban plan", "city planning", "都市計画", "urban and regional planning", "stadtplanung"], "type": "basic", "name": "urban planning"}
-# HEALTH-FITNESS: Veganism
-{"alt_forms": ["veganismo", "vegan food", "veganismus", "vegan diet", "vegan", "go vegan", "ビーガニズム", "vegans", "véganisme", "素食主义"], "type": "basic", "name": "veganism"}
-# HEALTH-FITNESS: Strength Training
-{"alt_forms": ["condicionamento de força", "condizionamento della forza", "strength conditioning", "acondicionamiento de fuerza", "krafttraining", "力量调节", "ストレングスコンディショニング", "conditionnement physique"], "type": "basic", "name": "strength training"}
-# HEALTH-FITNESS: Men's Health
-{"alt_forms": ["men health", "男性の健康", "salute dell'uomo", "menshealth", "la santé des hommes", "a saúde dos homens", "andrology", "salud de los hombres", "männer gesundheit", "男性健康", "mens health"], "type": "basic", "name": "men's health"}
-# MISC: Interior Design
-{"alt_forms": ["innenarchitektur", "design de interiores", "home decorating", "室内设计", "インテリア・デザイン", "home decor", "interior designer", "interiordesign", "home decoration", "interior designers", "interior decorating", "design d'intérieur", "interior decorator", "interior decoration", "interior decor", "diseño de interiores", "interior decorators"], "type": "basic", "name": "interior design"}
-# LEGAL: Criminology
-{"alt_forms": ["criminologia", "comparative criminology", "criminologie", "criminologists", "kriminologie", "criminología", "犯罪学", "criminologist", "criminology and criminal justice"], "type": "basic", "name": "criminology"}
-# LEGAL: Legaltech
-{"alt_forms": ["legal technology", "legaltech"], "type": "basic", "name": "legal tech"}
-# MISC: Roofing
-{"alt_forms": ["überdachung", "toiture", "cobertura", "屋顶", "techumbre", "copertura", "屋根ふき"], "type": "basic", "name": "roofing"}
-# MISC: Commercial Real Estate
+[
+{"alt_forms": ["qubits", "quantumcomputing"], "type": "basic", "name": "quantum computing"},
+{"alt_forms": ["artificial intel", "人工智能", "inteligencia artificial", "künstliche intelligenz", "人工知能", "artificialintelligence", "machine intelligence", "intelligenza artificiale", "inteligência artificial", "intelligence artificielle"], "type": "basic", "name": "artificial intelligence"},
+{"alt_forms": ["ビットコイン", "bitcoins", "比特币", "bitcoin foundation"], "type": "basic", "name": "bitcoin"},
+{"alt_forms": ["python programming language", "python software", "python programming"], "type": "basic", "name": "python"},
+{"alt_forms": ["网络安全", "cíber segurança", "cyberspace security", "cyber security standards", "onlinesicherheit", "cybersecurity policy", "cybersecurity standards", "seguridad cibernética", "サイバーセキュリティ", "sicurezza informatica", "cyber security", "cyber-sécurité"], "type": "basic", "name": "cybersecurity"},
+{"alt_forms": ["american politics", "u s politics", "united states politics", "usa politics", "uspolitics"], "type": "basic", "name": "us politics"},   
+{"alt_forms": ["girlpower", "女性のエンパワーメント", "赋予妇女权力", "women empowering women", "girl power", "women power", "l'autonomisation des femmes", "emancipazione femminile", "empower women", "womenempowerment", "empoderamiento de las mujeres", "women empowerment", "empoderamento das mulheres", "empowerwomen", "frauenförderung"], "type": "basic", "name": "women's empowerment"},
+{"alt_forms": ["global climate change", "das alterações climáticas", "climatechange", "気候変動", "climate talks", "klimawandel", "changement climatique", "global warming", "climate change mitigation", "climate action", "climate crisis", "气候变化", "climate change debate", "cambiamento climatico", "cambio climático", "globalwarming"], "type": "basic", "name": "climate change"},
+{"alt_forms": ["venture industry", "capital-risque", "vc backed", "capital de risco", "venture fund", "startup funding", "venture capitalist", "ベンチャーキャピタル", "vc fund", "venture backed", "venture capitalism", "venturecapital", "risikokapital", "capital de riesgo", "vc funded", "风险投资", "capitale di rischio", "venture capitalists", "venture funding"], "type": "basic", "name": "venture capital"},
+{"alt_forms": ["金融科技", "financial technology", "financial technologies", "フィンテック", "financial services software"], "type": "basic", "name": "fintech"},
+{"alt_forms": ["merger and acquisitions", "acquisitions", "并购", "合併と買収", "fusions et acquisitions", "fusioni e acquisizioni", "fusiones y adquisiciones", "fusionen und übernahmen", "m & a", "has acquired", "closed acquisition of", "mergers & acquisitions", "fusões e aquisições", "merger and acquisition", "mergers"], "type": "basic", "name": "mergers and acquisitions"},
+{"alt_forms": ["biotecnología", "biotech", "バイオテクノロジー", "biotechnologie", "biotecnologia", "bioindustry", "生物技术"], "type": "basic", "name": "biotechnology"},
+{"alt_forms": ["nanotecnología", "nanotechnologie", "nanotech", "nanoscience", "纳米技术", "nano tech", "nanocrystals", "ナノテクノロジー", "nanotecnologia"], "type": "basic", "name": "nanotechnology"},  
+{"alt_forms": ["pharmaceuticals industry", "pharmaceutical", "pharma", "industrie pharmaceutique", "industria farmaceutica", "pharmaceutical industries", "indústria farmacêutica", "pharmaceuticals", "製薬業界", "farmaceuticals", "pharmaceutical drug", "pharmaindustrie", "pharma industry", "industria farmacéutica", "制药业"], "type": "basic", "name": "pharmaceutical industry"},
+{"alt_forms": ["microbiologists", "微生物学", "mikrobiologie", "microorganism", "microbes", "microbiologia", "microbiología", "microbe", "microbiologist", "microbiologie", "microorganisms"], "type": "basic", "name": "microbiology"},
+{"alt_forms": ["robotics engineer", "robótica", "robotic", "机器人", "robotique", "robotics engineers", "robotica", "ロボット工学", "robotik"], "type": "basic", "name": "robotics"},
+{"alt_forms": ["seguridad del paciente", "medical regulations", "患者の安全", "medical regulators", "患者安全", "segurança do paciente", "la sicurezza del paziente", "patient safety policy", "sécurité du patient", "medical regulation", "patientsafety", "patientensicherheit"], "type": "basic", "name": "patient safety"},
+{"alt_forms": ["notfallmedizin", "emergencymedicine", "emergencymed", "emergency medicine journals", "medicina de emergencia", "accident and emergency medicine", "救急医療", "medicina d'emergenza", "emergency physicians", "emergency physician", "emergency medicine physician", "médecine d'urgence", "emergency medical aid", "emergency med", "emergency care", "emergency medicine journal", "medicamento de emergência", "急诊医学", "emergency medicine physicians"], "type": "basic", "name": "emergency medicine"},
+{"alt_forms": ["ortopedía", "orthopaedic surgery", "orthopaedic", "orthopedic medicine", "orthopédie", "骨科", "整形外科", "orthopädie", "orthopedic", "orthopaedic medicine", "orthopaedics", "ortopedia", "orthopedic surgery"], "type": "basic", "name": "orthopedics"},
+{"alt_forms": ["メンタルヘルス", "mentalhealthmatters", "mental wellness", "mentalhealth", "精神健康", "mental health care", "mental health professional", "mental health counseling", "mental illness", "santé mentale", "salud mental", "mental health professionals", "salute mentale", "saúde mental", "psychische gesundheit", "mentalhealthrevolution"], "type": "basic", "name": "mental health"},
+{"alt_forms": ["pädiatrie", "pediatric", "pediatricians", "pediatrics journals", "paediatricians", "stateofthechild", "pediatricresearch", "儿科", "pédiatrie", "pediatrician", "paediatrics", "pediatría", "pediatria", "小児科", "paediatrician"], "type": "basic", "name": "pediatrics"},
+{"alt_forms": ["veterinary physicians", "veterinary science", "vetmedicine", "veterinary", "tierheilkunde", "vetmed", "médecine vétérinaire", "veterinary sciences", "獣医学", "veterinarian", "veterinarians", "老兵专用医药", "veterinary physician", "medicina veterinária", "animal health", "medicina veterinaria", "veterinary practice"], "type": "basic", "name": "veterinary medicine"},
+{"alt_forms": ["medicaldevices", "medizinische geräte", "équipement médical", "meddevices", "医疗设备", "meddevice", "medicaldevice", "医療機器", "dispositivi medici", "dispositivos médicos", "medical device"], "type": "basic", "name": "medical devices"},
+{"alt_forms": ["la maladie d'alzheimer", "enfermedad de alzheimer", "alzheimer disease", "alzheimer's and dementia", "alzheimer's", "阿尔茨海默氏病", "alzheimers", "alzheimer-erkrankung", "doença de alzheimer", "alzheimer", "アルツハイマー病", "alzheimer's dementia", "il morbo di alzheimer"], "type": "basic", "name": "alzheimer's disease"},
+{"alt_forms": ["jugendlicher diabetes", "diabete giovanile", "diabetes juvenil", "type1 diabetes", "type1diabetes", "青少年糖尿病", "type i diabetes", "diabetes 1", "diabète juvénile", "diabetes type 1", "juvenile diabetes", "diabetes1", "若年性糖尿病"], "type": "basic", "name": "type 1 diabetes"},
+{"alt_forms": ["心的外傷後ストレス障害", "创伤后应激障碍", "disturbo post traumatico da stress", "transtorno de estresse pós-traumático", "posttraumatic stress disorder", "trastorno de estrés postraumático", "trouble de stress post-traumatique", "ptsd", "posttraumatische belastungsstörung"], "type": "basic", "name": "post traumatic stress disorder"},
+{"alt_forms": ["ethnology", "antropología", "ethnologists", "anthropologie", "anthropologists", "antropologia", "人類学", "ethnologist", "人类学", "anthropologist"], "type": "basic", "name": "anthropology"},
+{"alt_forms": ["history of philosophy", "filosofía", "philosophical schools", "philosophical methods", "philosophical logic", "philosophie", "philosophers", "哲学", "philosophical questions", "filosofia", "philosophical traditions", "philosophical inquiries"], "type": "basic", "name": "philosophy"},
+{"alt_forms": ["考古学", "archéologie", "arqueologia", "archeology", "arqueología", "archäologie", "archeologia", "archaeologists", "archaeologist"], "type": "basic", "name": "archaeology"},
+{"alt_forms": ["agricoltura urbana", "urban farming", "都市農業", "urban farms", "urban farm", "urbanagriculture", "urbanfarming", "urbane landwirtschaft", "都市农业", "urban farmer", "agricultura urbana", "agriculture urbaine"], "type": "basic", "name": "urban agriculture"},
+{"alt_forms": ["pol science", "政治学", "science politique", "political studies", "politikwissenschaft", "polisci", "ciencias políticas", "politicalscience", "ciência política", "poli sci", "scienze politiche"], "type": "basic", "name": "political science"},
+{"alt_forms": ["planejamento urbano", "城市规划", "urban development", "regional planning", "pianificazione urbana", "urbanplanning", "town planning", "rural planning", "urbanismo", "aménagement urbain", "urban design", "urban planner", "cityplanning", "urban plan", "city planning", "都市計画", "urban and regional planning", "stadtplanung"], "type": "basic", "name": "urban planning"},
+{"alt_forms": ["veganismo", "vegan food", "veganismus", "vegan diet", "vegan", "go vegan", "ビーガニズム", "vegans", "véganisme", "素食主义"], "type": "basic", "name": "veganism"},
+{"alt_forms": ["condicionamento de força", "condizionamento della forza", "strength conditioning", "acondicionamiento de fuerza", "krafttraining", "力量调节", "ストレングスコンディショニング", "conditionnement physique"], "type": "basic", "name": "strength training"},
+{"alt_forms": ["men health", "男性の健康", "salute dell'uomo", "menshealth", "la santé des hommes", "a saúde dos homens", "andrology", "salud de los hombres", "männer gesundheit", "男性健康", "mens health"], "type": "basic", "name": "men's health"},
+{"alt_forms": ["innenarchitektur", "design de interiores", "home decorating", "室内设计", "インテリア・デザイン", "home decor", "interior designer", "interiordesign", "home decoration", "interior designers", "interior decorating", "design d'intérieur", "interior decorator", "interior decoration", "interior decor", "diseño de interiores", "interior decorators"], "type": "basic", "name": "interior design"},
+{"alt_forms": ["criminologia", "comparative criminology", "criminologie", "criminologists", "kriminologie", "criminología", "犯罪学", "criminologist", "criminology and criminal justice"], "type": "basic", "name": "criminology"},
+{"alt_forms": ["legal technology", "legaltech"], "type": "basic", "name": "legal tech"},
+{"alt_forms": ["überdachung", "toiture", "cobertura", "屋顶", "techumbre", "copertura", "屋根ふき"], "type": "basic", "name": "roofing"},
 {"alt_forms": ["商業不動産", "commercial property", "immobilier commercial", "commercialrealestate", "immobile commerciale", "commercialre", "bienes raíces comerciales", "commercial property news", "商业房地产", "commercial development", "commercial building", "gewerbeimmobilien", "imóveis comerciais"], "type": "basic", "name": "commercial real estate"}
+]
