@@ -6,6 +6,7 @@ import wikipedia
 from models import WikipediaPage
 from bs4 import BeautifulSoup
 import re
+from tqdm.contrib.concurrent import process_map
 
 
 def load_bluesky_users(
@@ -253,3 +254,15 @@ def get_wikipedia_search_results_api(
     except Exception as e:
         print(f"Error getting Wikipedia search results: {e}")
         return []
+
+
+if __name__ == "__main__":
+    for i in range(30000):
+        print(
+            i,
+            process_map(
+                get_wikipedia_search_results,
+                ["Alexandria Ocasio-Cortez"] * 5,
+                max_workers=5,
+            ),
+        )

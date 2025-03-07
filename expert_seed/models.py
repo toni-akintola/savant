@@ -1,13 +1,81 @@
+from typing import Dict, List, Any, Optional
+
+# Import the PartialBlueskyUser class directly here instead of from models
+# from models import PartialBlueskyUser, WikipediaPage
+
+
+# Define an extended PartialBlueskyUser class
 class PartialBlueskyUser:
     def __init__(
-        self, name, handle, description=None, followers=None, following=None, rank=None
+        self,
+        handle: str,
+        name: Optional[str] = None,
+        description: Optional[str] = None,
+        did: Optional[str] = None,
+        avatar: Optional[str] = None,
+        banner: Optional[str] = None,
+        followersCount: Optional[int] = None,
+        followsCount: Optional[int] = None,
+        postsCount: Optional[int] = None,
+        createdAt: Optional[str] = None,
+        indexedAt: Optional[str] = None,
+        labels: Optional[List[Dict[str, Any]]] = None,
+        associated: Optional[Dict[str, Any]] = None,
+        sfc: Optional[int] = None,
     ):
-        self.rank = rank
-        self.name = name
         self.handle = handle
+        self.name = name
         self.description = description
-        self.followers = followers
-        self.following = following
+        self.did = did
+        self.avatar = avatar
+        self.banner = banner
+        self.followersCount = followersCount
+        self.followsCount = followsCount
+        self.postsCount = postsCount
+        self.createdAt = createdAt
+        self.indexedAt = indexedAt
+        self.labels = labels or []
+        self.associated = associated or {}
+        self.sfc = sfc
+
+    @classmethod
+    def from_dict(cls, data: Dict[str, Any]) -> "PartialBlueskyUser":
+        """Create a PartialBlueskyUser instance from a dictionary."""
+        return cls(
+            handle=data.get("handle"),
+            name=data.get("displayName"),
+            description=data.get("description"),
+            did=data.get("did"),
+            avatar=data.get("avatar"),
+            banner=data.get("banner"),
+            followers_count=data.get("followersCount"),
+            follows_count=data.get("followsCount"),
+            posts_count=data.get("postsCount"),
+            created_at=data.get("createdAt"),
+            indexed_at=data.get("indexedAt"),
+            labels=data.get("labels"),
+            associated=data.get("associated"),
+            sfc=data.get("sfc"),
+        )
+
+    def to_dict(self) -> Dict[str, Any]:
+        """Convert the user object to a dictionary."""
+        return {
+            "handle": self.handle,
+            "displayName": self.name,
+            "description": self.description,
+            "did": self.did,
+            "avatar": self.avatar,
+            "banner": self.banner,
+            "followersCount": self.followersCount,
+            "followsCount": self.followsCount,
+            "postsCount": self.postsCount,
+            "createdAt": self.createdAt,
+            "indexedAt": self.indexedAt,
+            "labels": self.labels,
+            "associated": self.associated,
+            "sfc": self.sfc,
+        }
 
     def __repr__(self):
         rank_str = f"#{self.rank}: " if self.rank is not None else ""
@@ -22,17 +90,6 @@ class PartialBlueskyUser:
         if not isinstance(other, PartialBlueskyUser):
             return False
         return self.handle.lstrip("@") == other.handle.lstrip("@")
-
-    def to_dict(self):
-        result = {
-            "name": self.name,
-            "handle": self.handle,
-            "followers": self.followers,
-            "following": self.following,
-        }
-        if self.rank is not None:
-            result["rank"] = self.rank
-        return result
 
     def __str__(self):
         return self.__repr__()
