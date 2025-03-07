@@ -1,7 +1,11 @@
 import json
 from typing import List, Dict, Any, Optional, Union
 import os
-import wikipediaapi
+import requests
+import wikipedia
+from models import WikipediaPage
+from bs4 import BeautifulSoup
+import re
 
 
 def load_bluesky_users(
@@ -139,19 +143,113 @@ def get_user_stats() -> Dict[str, Any]:
     }
 
 
-def get_wikipedia_summary(name: str) -> str:
+def get_wikipedia_summary(title: str) -> Dict[str, Any]:
     """
-    Get a summary of a Wikipedia page for a given name.
+    Get a Wikipedia summary for a given title by parsing the HTML content.
 
     Args:
-        name: The name of the person to search for on Wikipedia
+        title: The Wikipedia page title or the last part of the URL
 
     Returns:
-        A summary of the Wikipedia page for the given name
+        A structured summary of the Wikipedia page
     """
-    wiki_wiki = wikipediaapi.Wikipedia(user_agent="filter-bot", language="en")
-    page = wiki_wiki.page(name)
-    if page.exists():
-        return page.summary
-    else:
-        return f"No Wikipedia page found for {name}"
+    # Format the title for URL (replace spaces with underscores)
+    formatted_title = title.replace(" ", "_")
+    url = f"https://en.wikipedia.org/wiki/{formatted_title}"
+
+    try:
+        # Get the page content
+        headers = {
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
+        }
+        response = requests.get(url, headers=headers, timeout=10)
+        response.raise_for_status()
+
+        # Parse the HTML
+        soup = BeautifulSoup(response.text, "html.parser")
+
+        # Extract the page title
+        page_title = soup.find(id="firstHeading").text.strip()
+
+        # Extract the summary (first paragraph of the content)
+        content_div = soup.find(id="mw-content-text")
+
+        # Find the first paragraph that has substantial content
+        paragraphs = content_div.find_all("p")
+        summary_text = ""
+        for p in paragraphs:
+            # Skip empty paragraphs or those with just whitespace/newlines
+            if p.text.strip() and len(p.text.strip()) > 50:
+                summary_text = p.text.strip()
+                break
+
+        # Clean up the summary text (remove citation brackets like [1], [2], etc.)
+        summary_text = re.sub(r"\[\d+\]", "", summary_text)
+
+        # Extract infobox data if available
+        infobox = soup.find("table", class_="infobox")
+        infobox_data = {}
+
+        if infobox:
+            rows = infobox.find_all("tr")
+            for row in rows:
+                header = row.find("th")
+                data = row.find("td")
+                if header and data:
+                    key = header.text.strip()
+                    value = data.text.strip()
+                    # Clean up the value (remove citation brackets)
+                    value = re.sub(r"\[\d+\]", "", value)
+                    infobox_data[key] = value
+
+        # Extract categories
+        categories = []
+        category_links = soup.select("#mw-normal-catlinks ul li a")
+        for link in category_links:
+            categories.append(link.text.strip())
+
+        # Construct a structured summary
+        result = {
+            "title": page_title,
+            "url": url,
+            "summary": summary_text,
+            "infobox": infobox_data,
+            "categories": categories,
+        }
+
+        return result
+
+    except Exception as e:
+        return {
+            "title": title,
+            "url": url,
+            "error": str(e),
+            "summary": f"Failed to extract summary: {str(e)}",
+            "infobox": {},
+            "categories": [],
+        }
+
+
+def get_wikipedia_search_results(query: str, limit: int = 3) -> List[str]:
+    """
+    Get a Wikipedia search for a given query.
+    """
+    return wikipedia.search(query, results=limit)
+
+
+def get_wikipedia_search_results_api(
+    query: str, language: str = "en", limit: int = 3
+) -> List[WikipediaPage]:
+    """
+    Get a Wikipedia search for a given query.
+    """
+    try:
+        formatted_query = query.replace(" ", "_")
+        response = requests.get(
+            f"https://api.wikimedia.org/core/v1/wikipedia/{language}/search/page?q={formatted_query}&limit={limit}"
+        )
+        response.raise_for_status()
+        return [WikipediaPage.from_dict(page) for page in response.json()["pages"]]
+    except Exception as e:
+        print(f"Error getting Wikipedia search results: {e}")
+        return []
