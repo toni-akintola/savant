@@ -4,13 +4,14 @@ FROM python:3.9-slim
 # Set the working directory in the container
 WORKDIR /app
 
-# Install system dependencies including Chrome
+# Install system dependencies including Chrome and Git
 RUN apt-get update && apt-get install -y \
     build-essential \
     wget \
     gnupg \
     unzip \
     graphviz \
+    git \
     && wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - \
     && echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list \
     && apt-get update \
