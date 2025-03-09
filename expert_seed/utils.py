@@ -246,6 +246,10 @@ def get_wikipedia_search_results_api(
     """
     try:
         formatted_query = query.replace(" ", "_")
+        headers = {
+            "Authorization": f"Bearer {os.environ.get('WIKIMEDIA_API_KEY')}",
+            "User-Agent": "filter [2.0]",
+        }
         response = requests.get(
             f"https://api.wikimedia.org/core/v1/wikipedia/{language}/search/page?q={formatted_query}&limit={limit}"
         )
@@ -254,15 +258,3 @@ def get_wikipedia_search_results_api(
     except Exception as e:
         print(f"Error getting Wikipedia search results: {e}")
         return []
-
-
-if __name__ == "__main__":
-    for i in range(30000):
-        print(
-            i,
-            process_map(
-                get_wikipedia_search_results,
-                ["Alexandria Ocasio-Cortez"] * 5,
-                max_workers=5,
-            ),
-        )
