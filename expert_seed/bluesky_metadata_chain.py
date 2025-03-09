@@ -26,18 +26,6 @@ logger = logging.getLogger("BlueskyMetadataChain")
 load_dotenv()
 
 
-image = modal.Image.debian_slim(python_version="3.11").pip_install_from_requirements(
-    requirements_txt="requirements.txt"
-)
-environment = {}
-environment["ANTHROPIC_API_KEY"] = os.environ.get("ANTHROPIC_API_KEY")
-environment["WIKIMEDIA_CLIENT_ID"] = os.environ.get("WIKIMEDIA_CLIENT_ID")
-environment["WIKIMEDIA_CLIENT_SECRET"] = os.environ.get("WIKIMEDIA_CLIENT_SECRET")
-environment["WIKIMEDIA_API_KEY"] = os.environ.get("WIKIMEDIA_API_KEY")
-image = image.env(environment)
-
-app = modal.App(name="bluesky-metadata-chain", image=image)
-vol = modal.Volume.from_name("bluesky-metadata-chain", create_if_missing=True)
 # Initialize Anthropic client
 anthropic_client = anthropic.Anthropic(api_key=os.environ.get("ANTHROPIC_API_KEY"))
 
@@ -175,48 +163,27 @@ class BlueskyMetadataChain:
         logger.info(f"Completed processing for user: {user.name} (@{user.handle})")
         result = user.to_dict()
         result["metadata"] = matched_results[0] if matched_results else {}
-        self.results.append(result)
 
         return result
 
     def process_users(self, users: List[PartialBlueskyUser]) -> None:
         """
         Process multiple Bluesky users and save results to file.
-        Implements rate limiting by pausing for an hour after every 5000 users.
 
         Args:
             users: List of PartialBlueskyUser objects
+            descriptions: Dictionary mapping handles to descriptions
         """
         with open("final_profiles.jsonl", "a") as f:
             f.write("[\n")
 
-        processed_count = 0
-        total_users = len(users)
-
-        for i, user in enumerate(users):
-            logger.info(
-                f"Processing user {i+1}/{total_users}: {user.name} (@{user.handle})"
-            )
+        for user in users:
+            logger.info(f"Processing {user.name} (@{user.handle})")
 
             start_time = time.time()
             self.process_user(user)
             end_time = time.time()
-
-            processed_count += 1
             logger.info(f"Time taken to process user: {end_time - start_time} seconds")
-            logger.info(
-                f"Processed {processed_count} users in current batch, {i+1}/{total_users} total"
-            )
-
-            # Rate limiting: pause for an hour after processing 5000 users
-            if processed_count >= 5000 and i < total_users - 1:
-                logger.info(
-                    f"Reached 5000 user limit. Pausing for 1 hour to avoid rate limiting..."
-                )
-                self.save_results()  # Save current results before pausing
-                time.sleep(3600)  # Sleep for 1 hour (3600 seconds)
-                processed_count = 0  # Reset counter
-                logger.info("Resuming processing after pause")
 
         with open("final_profiles.jsonl", "a") as f:
             f.write("]\n")
@@ -234,18 +201,6 @@ class BlueskyMetadataChain:
             logger.error(f"Error saving results to file: {str(e)}")
 
 
-@app.function(volumes={"/data": vol}, timeout=60000)
-def run_remote_worker(users: List[PartialBlueskyUser]):
-    """Example usage of the BlueskyMetadataChain."""
-    logger.info("Starting BlueskyMetadataChain example")
-    chain = BlueskyMetadataChain(output_file="final_profiles.jsonl")
-    chain.process_users(users)
-    with open("/data/final_profiles.jsonl", "w") as f:
-        f.write(json.dumps(chain.results))
-    vol.commit()
-
-
-@app.local_entrypoint()
 def main():
     with open("user_profiles.json", "r") as f:
         users = [
@@ -262,7 +217,9 @@ def main():
             )
             for user in json.load(f)
         ]
-    run_remote_worker.remote(users)
+    logger.info("Starting BlueskyMetadataChain example")
+    chain = BlueskyMetadataChain(output_file="final_profiles.jsonl")
+    chain.process_users(users)
 
 
 if __name__ == "__main__":
