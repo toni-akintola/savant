@@ -8,10 +8,11 @@ import anthropic
 from dotenv import load_dotenv
 from models import PartialBlueskyUser, WikipediaPage
 from utils import (
-    get_wikipedia_search_results_api,
+    get_wikipedia_search_results,
     get_wikipedia_summary,
     write_json_lines,
 )
+from tqdm.contrib.concurrent import process_map
 
 # Configure logging
 logging.basicConfig(
@@ -43,7 +44,7 @@ class BlueskyMetadataChain:
         logger.info(f"Initialized BlueskyMetadataChain with output file: {output_file}")
 
     def verify_search_result(
-        self, user: PartialBlueskyUser, page: WikipediaPage
+        self, user: PartialBlueskyUser, page_title: str, page_summary: str
     ) -> bool:
         """
         Use Claude to verify if a search result matches the Bluesky user with >95% confidence.
@@ -58,7 +59,7 @@ class BlueskyMetadataChain:
         """
         # Extract relevant information from the search result
 
-        logger.info(f"Verifying search result: {page.title}")
+        logger.info(f"Verifying search result: {page_title}")
 
         prompt = f"""
         I need to verify if a search result is about the same person/entity as a Bluesky user profile.
@@ -68,8 +69,8 @@ class BlueskyMetadataChain:
         Handle: {user.handle}
         Self-description: {user.description}
         
-        SEARCH RESULT TITLE: {page.title}
-        SEARCH RESULT DESCRIPTION: {page.description}
+        SEARCH RESULT TITLE: {page_title}
+        SEARCH RESULT DESCRIPTION: {page_summary}
         Based on this information, determine if we can be ABSOLUTELY CERTAIN that this search result refers to the same person as the Bluesky profile.
         THE NAMES OF THE PEOPLE MUST BE THE SAME.
        
@@ -91,7 +92,7 @@ class BlueskyMetadataChain:
             # Check if response is affirmative
             result_matches = "YES" in response.content[0].text.strip().upper()
             logger.info(
-                f"Verification result for {page.title}: {'MATCH' if result_matches else 'NO MATCH'}"
+                f"Verification result for {page_title}: {'MATCH' if result_matches else 'NO MATCH'}"
             )
             return result_matches
         except Exception as e:
@@ -135,27 +136,28 @@ class BlueskyMetadataChain:
         logger.info(f"Wikipedia query: {wikipedia_query}")
 
         logger.info(f"STEP 2: Executing Wikipedia search with query: {wikipedia_query}")
-        wikipedia_results: List[WikipediaPage] = get_wikipedia_search_results_api(
+        # {page_title: page_summary}
+        wikipedia_results: Dict[str, str] = get_wikipedia_search_results(
             query=wikipedia_query
         )
 
         logger.info("STEP 3: Verifying and processing Wikipedia results")
         matched_results = []
 
-        for page in wikipedia_results:
-            logger.info(f"Checking Wikipedia page: {page.title}")
+        for page_title, page_summary in wikipedia_results.items():
+            logger.info(f"Checking Wikipedia page: {page_title}")
 
-            if self.verify_search_result(user, page):
-                logger.info(f"Wikipedia page verified as a match: {page.title}")
+            if self.verify_search_result(user, page_title, page_summary):
+                logger.info(f"Wikipedia page verified as a match: {page_title}")
                 self.wikipedia_matches += 1
                 # Extract and summarize Wikipedia content
                 logger.info(f"Extracting Wikipedia content")
-                wikipedia_data = self.extract_wikipedia_summary(page.title)
+                wikipedia_data = self.extract_wikipedia_summary(page_title)
 
                 matched_results.append(wikipedia_data)
                 break
             else:
-                logger.info(f"Wikipedia page not verified as a match: {page.title}")
+                logger.info(f"Wikipedia page not verified as a match: {page_title}")
 
         # Create the metadata object
         logger.info("STEP 5: Creating final metadata object")
@@ -177,14 +179,8 @@ class BlueskyMetadataChain:
         with open(self.output_file, "a+") as f:
             f.write("[\n")
 
-        for user in users:
-            logger.info(f"Processing {user.name} (@{user.handle})")
-
-            start_time = time.time()
-            self.process_user(user)
-            end_time = time.time()
-            process_time = end_time - start_time
-            logger.info(f"Time taken to process user: {process_time} seconds")
+        for result in process_map(self.process_user, users, max_workers=10):
+            logger.info(f"Processed user: {result['handle']}")
 
         with open(self.output_file, "a+") as f:
             f.write("]\n")

@@ -6,6 +6,8 @@ from models import WikipediaPage
 from bs4 import BeautifulSoup
 import re
 import time
+import wikipedia
+from concurrent.futures import ThreadPoolExecutor
 
 
 def load_bluesky_users(
@@ -239,12 +241,14 @@ def get_wikipedia_search_results_api(
     try:
         formatted_query = query.replace(" ", "_")
         headers = {
+            "User-Agent": "filter-bot/0.0 (oakintol@nd.edu)",
             "Authorization": f"Bearer {os.environ.get('WIKIMEDIA_API_KEY')}",
-            "User-Agent": "filter [2.0]",
         }
         response = requests.get(
-            f"https://api.wikimedia.org/core/v1/wikipedia/{language}/search/page?q={formatted_query}&limit={limit}"
+            f"https://api.wikimedia.org/core/v1/wikipedia/{language}/search/page?q={formatted_query}&limit={limit}",
+            headers=headers,
         )
+        print(response.json())
         response.raise_for_status()
         return [WikipediaPage.from_dict(page) for page in response.json()["pages"]]
     except Exception as e:
@@ -254,3 +258,43 @@ def get_wikipedia_search_results_api(
             time.sleep(3600)
             return get_wikipedia_search_results_api(query, language, limit, retries - 1)
         return []
+
+
+def _search_wikipedia(query_char):
+    """
+    Wrapper function for wikipedia.search that takes a single character.
+    This function can be pickled for multiprocessing.
+    """
+    return wikipedia.search(query_char)
+
+
+def _get_wikipedia_summary(page_title):
+    """
+    Wrapper function for wikipedia.summary that takes a page title.
+    This function can be pickled for multiprocessing.
+    """
+    try:
+        return page_title, wikipedia.summary(page_title, auto_suggest=False)
+    except Exception as e:
+        return page_title, None
+
+
+def get_wikipedia_search_results(query: str) -> dict:
+    """
+    Get a Wikipedia search for a given query.
+
+    Returns:
+        Dictionary mapping page titles to their summaries
+    """
+    # First, search for pages related to the query
+    search_results = wikipedia.search(query)
+
+    # Then get summaries for each page in parallel
+    summaries = {
+        page_title: _get_wikipedia_summary(page_title) for page_title in search_results
+    }
+    return summaries
+
+
+if __name__ == "__main__":
+    print(get_wikipedia_search_results("George Takei"))
