@@ -2,11 +2,10 @@ import json
 from typing import List, Dict, Any, Optional, Union
 import os
 import requests
-import wikipedia
 from models import WikipediaPage
 from bs4 import BeautifulSoup
 import re
-from tqdm.contrib.concurrent import process_map
+import time
 
 
 def load_bluesky_users(
@@ -231,15 +230,8 @@ def get_wikipedia_summary(title: str) -> Dict[str, Any]:
         }
 
 
-def get_wikipedia_search_results(query: str, limit: int = 3) -> List[str]:
-    """
-    Get a Wikipedia search for a given query.
-    """
-    return wikipedia.search(query, results=limit)
-
-
 def get_wikipedia_search_results_api(
-    query: str, language: str = "en", limit: int = 3
+    query: str, language: str = "en", limit: int = 3, retries: int = 3
 ) -> List[WikipediaPage]:
     """
     Get a Wikipedia search for a given query.
@@ -257,4 +249,8 @@ def get_wikipedia_search_results_api(
         return [WikipediaPage.from_dict(page) for page in response.json()["pages"]]
     except Exception as e:
         print(f"Error getting Wikipedia search results: {e}")
+        if response.status_code == 429 and retries > 0:
+            print("Rate limit exceeded, sleeping for 1 hour")
+            time.sleep(3600)
+            return get_wikipedia_search_results_api(query, language, limit, retries - 1)
         return []

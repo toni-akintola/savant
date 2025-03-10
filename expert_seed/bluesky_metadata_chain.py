@@ -1,3 +1,4 @@
+#!/home/ubuntu/data-science/.venv/bin/python
 import json
 import os
 import time
@@ -161,7 +162,8 @@ class BlueskyMetadataChain:
         logger.info(f"Completed processing for user: {user.name} (@{user.handle})")
         result = user.to_dict()
         result["metadata"] = matched_results[0] if matched_results else {}
-
+        with open(self.output_file, "a+") as f:
+            f.write(json.dumps(result) + ",\n")
         return result
 
     def process_users(self, users: List[PartialBlueskyUser]) -> None:
@@ -172,7 +174,7 @@ class BlueskyMetadataChain:
             users: List of PartialBlueskyUser objects
             descriptions: Dictionary mapping handles to descriptions
         """
-        with open("final_profiles.jsonl", "a") as f:
+        with open(self.output_file, "a+") as f:
             f.write("[\n")
 
         for user in users:
@@ -181,9 +183,10 @@ class BlueskyMetadataChain:
             start_time = time.time()
             self.process_user(user)
             end_time = time.time()
-            logger.info(f"Time taken to process user: {end_time - start_time} seconds")
+            process_time = end_time - start_time
+            logger.info(f"Time taken to process user: {process_time} seconds")
 
-        with open("final_profiles.jsonl", "a") as f:
+        with open(self.output_file, "a+") as f:
             f.write("]\n")
 
     def save_results(self) -> None:
@@ -200,7 +203,9 @@ class BlueskyMetadataChain:
 
 
 def main():
-    with open("user_profiles.json", "r") as f:
+    with open(
+        "/home/ubuntu/data-science/data/expert-seed/user_profiles.json", "r"
+    ) as f:
         users = [
             PartialBlueskyUser(
                 name=user.get("displayName"),
@@ -216,7 +221,9 @@ def main():
             for user in json.load(f)
         ]
     logger.info("Starting BlueskyMetadataChain example")
-    chain = BlueskyMetadataChain(output_file="/data/graph-seed/final_profiles.jsonl")
+    chain = BlueskyMetadataChain(
+        output_file="/home/ubuntu/data-science/data/expert-seed/final_profiles.json"
+    )
     chain.process_users(users)
 
 
