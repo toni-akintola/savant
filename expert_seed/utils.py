@@ -297,4 +297,4 @@ def get_wikipedia_search_results(query: str) -> dict:
 
 
 if __name__ == "__main__":
-    print(get_wikipedia_search_results("George Takei"))
+    print(get_wikipedia_search_results("The Daily Show"))

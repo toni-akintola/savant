@@ -71,10 +71,10 @@ class BlueskyMetadataChain:
         
         SEARCH RESULT TITLE: {page_title}
         SEARCH RESULT DESCRIPTION: {page_summary}
-        Based on this information, determine if we can be ABSOLUTELY CERTAIN that this search result refers to the same person as the Bluesky profile.
-        THE NAMES OF THE PEOPLE MUST BE THE SAME.
+        Based on this information, determine if we can be ABSOLUTELY CERTAIN that this search result refers to the same person or entity as the Bluesky profile.
+        THE NAMES OF THE PEOPLE/ENTITIES MUST BE THE SAME.
        
-        IF THE SEARCH RESULT IS NOT ABOUT A PERSON, respond with "NO".
+        IF THE SEARCH RESULT IS NOT ABOUT A PERSON/ENTITY, respond with "NO".
         
         Respond with ONLY "YES" if you are ABSOLUTELY CERTAIN it's the same person, or "NO" if you are not that confident.
         """
