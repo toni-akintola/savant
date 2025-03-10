@@ -216,7 +216,7 @@ def main():
             for user in json.load(f)
         ]
     logger.info("Starting BlueskyMetadataChain example")
-    chain = BlueskyMetadataChain(output_file="final_profiles.jsonl")
+    chain = BlueskyMetadataChain(output_file="/data/graph-seed/final_profiles.jsonl")
     chain.process_users(users)
 
 
