@@ -1,126 +1,65 @@
-# TECH: quantum computing
-{"alt_forms": ["qubits", "quantumcomputing"],  "canonical": "quantum computing"}
-# TECH: artificial intelligence
-{"alt_forms": ["artificial intel", "人工智能", "inteligencia artificial", "künstliche intelligenz", "人工知能", "artificialintelligence", "machine intelligence", "intelligenza artificiale", "inteligência artificial", "intelligence artificielle"],  "canonical": "artificial intelligence"}
-# TECH: bitcoin
-{"alt_forms": ["ビットコイン", "bitcoins", "比特币", "bitcoin foundation"],  "canonical": "bitcoin"}
-# TECH: python
-{"alt_forms": ["python programming language", "python software", "python programming"],  "canonical": "python"}
-# TECH: cybersecurity
-{"alt_forms": ["网络安全", "cíber segurança", "cyberspace security", "cyber security standards", "onlinesicherheit", "cybersecurity policy", "cybersecurity standards", "seguridad cibernética", "サイバーセキュリティ", "sicurezza informatica", "cyber security", "cyber-sécurité"],  "canonical": "cybersecurity"}
-# POLITICS & NEWS: US politics
-{"alt_forms": ["journalist", "journalists", "reporters"], "canonical": "journalism"}
-# POLITICS & NEWS: US politics
-{"alt_forms": ["american politics", "u s politics", "united states politics", "usa politics", "uspolitics"],  "canonical": "us politics"}
-# POLITICS & NEWS: World News
-{"alt_forms": ["international news", "nouvelles du monde", "internationalnews", "世界新闻", "weltnachrichten", "notizie dal mondo", "noticias del mundo", "noticias do mundo", "worldnews", "global news", "世界のニュース", "globalnews"],  "canonical": "world news"}
-# POLITICS & NEWS: Canadian Poltics
-{"alt_forms": ["canada politics", "cdnpol", "canadianpolitics", "canadapolitics", "politics of canada", "politics canada", "cdnpoli"],  "canonical": "canadian politics"}
-# ACTIVISM: women empowerment
-{"alt_forms": ["girlpower", "女性のエンパワーメント", "赋予妇女权力", "women empowering women", "girl power", "women power", "l'autonomisation des femmes", "emancipazione femminile", "empower women", "womenempowerment", "empoderamiento de las mujeres", "women empowerment", "empoderamento das mulheres", "empowerwomen", "frauenförderung"],  "canonical": "women's empowerment"}
-# ACTIVISM: Climate Change
-{"alt_forms": ["global climate change", "das alterações climáticas", "climatechange", "気候変動", "climate talks", "klimawandel", "changement climatique", "global warming", "climate change mitigation", "climate action", "climate crisis", "气候变化", "climate change debate", "cambiamento climatico", "cambio climático", "globalwarming"],  "canonical": "climate change"}
-# ACTIVISM: Gun Control
-{"alt_forms": ["gun violence", "waffenkontrolle", "us gun control", "le contrôle des armes", "銃規制", "gun laws", "gun safety", "controlo de armas", "controllo delle armi", "枪支控制", "control de armas", "guncontrol"], "canonical": "gun control"}
-# ACTIVISM: Animal Rights
-{"alt_forms": ["tierrechte", "cruelty to animals", "derechos animales", "animal rights activists", "animals right", "animal abuse", "動物の権利", "diritti degli animali", "animal welfare", "droits des animaux", "animal cruelty", "动物权益", "animal protection", "animal advocacy", "animal liberation", "animal suffering", "animalrights", "direito dos animais", "animal rights activism"], "canonical": "animal rights"}
-# ACTIVISM: Development Aid
-{"alt_forms": ["開発援助", "aiuto per lo sviluppo", "overseas aid", "development assistance", "aide au développement", "ajuda ao desenvolvimento", "overseas development aid", "entwicklungshilfe", "ayuda para el desarrollo", "international aid", "foreign aid", "发展援助", "official development assistance"], "canonical": "development aid"}
-# FINANCE: venture capital
-{"alt_forms": ["venture industry", "capital-risque", "vc backed", "capital de risco", "venture fund", "startup funding", "venture capitalist", "ベンチャーキャピタル", "vc fund", "venture backed", "venture capitalism", "venturecapital", "risikokapital", "capital de riesgo", "vc funded", "风险投资", "capitale di rischio", "venture capitalists", "venture funding"],  "canonical": "venture capital"}
-# FINANCE: fintech
-{"alt_forms": ["金融科技", "financial technology", "financial technologies", "フィンテック", "financial services software"],  "canonical": "fintech"}
-# FINANCE: mergers and acquisitions
-{"alt_forms": ["merger and acquisitions", "acquisitions", "并购", "合併と買収", "fusions et acquisitions", "fusioni e acquisizioni", "fusiones y adquisiciones", "fusionen und übernahmen", "m & a", "has acquired", "closed acquisition of", "mergers & acquisitions", "fusões e aquisições", "merger and acquisition", "mergers"],  "canonical": "mergers and acquisitions"}
-# SCIENCE: biotechnology
-{"alt_forms": ["biotecnología", "biotech", "バイオテクノロジー", "biotechnologie", "biotecnologia", "bioindustry", "生物技术"],  "canonical": "biotechnology"}
-# SCIENCE: Nanotechnology
-{"alt_forms": ["nanotecnología", "nanotechnologie", "nanotech", "nanoscience", "纳米技术", "nano tech", "nanocrystals", "ナノテクノロジー", "nanotecnologia"],  "canonical": "nanotechnology"}
-# SCIENCE: Pharmaceuticals
-{"alt_forms": ["pharmaceuticals industry", "pharmaceutical", "pharma", "industrie pharmaceutique", "industria farmaceutica", "pharmaceutical industries", "indústria farmacêutica", "pharmaceuticals", "製薬業界", "farmaceuticals", "pharmaceutical drug", "pharmaindustrie", "pharma industry", "industria farmacéutica", "制药业"],  "canonical": "pharmaceutical industry"}
-# SCIENCE: Microbiology
-{"alt_forms": ["microbiologists", "微生物学", "mikrobiologie", "microorganism", "microbes", "microbiologia", "microbiología", "microbe", "microbiologist", "microbiologie", "microorganisms"],  "canonical": "microbiology"}
-# SCIENCE: Robotics
-{"alt_forms": ["robotics engineer", "robótica", "robotic", "机器人", "robotique", "robotics engineers", "robotica", "ロボット工学", "robotik"],  "canonical": "robotics"}
-# MEDICINE: Patient Safety
-{"alt_forms": ["seguridad del paciente", "medical regulations", "患者の安全", "medical regulators", "患者安全", "segurança do paciente", "la sicurezza del paziente", "patient safety policy", "sécurité du patient", "medical regulation", "patientsafety", "patientensicherheit"],  "canonical": "patient safety"}
-# MEDICINE: Emergency Medicine
-{"alt_forms": ["notfallmedizin", "emergencymedicine", "emergencymed", "emergency medicine journals", "medicina de emergencia", "accident and emergency medicine", "救急医療", "medicina d'emergenza", "emergency physicians", "emergency physician", "emergency medicine physician", "médecine d'urgence", "emergency medical aid", "emergency med", "emergency care", "emergency medicine journal", "medicamento de emergência", "急诊医学", "emergency medicine physicians"],  "canonical": "emergency medicine"}
-# MEDICINE: Orthopedics
-{"alt_forms": ["ortopedía", "orthopaedic surgery", "orthopaedic", "orthopedic medicine", "orthopédie", "骨科", "整形外科", "orthopädie", "orthopedic", "orthopaedic medicine", "orthopaedics", "ortopedia", "orthopedic surgery"],  "canonical": "orthopedics"}
-# MEDICINE: Mental Health
-{"alt_forms": ["メンタルヘルス", "mentalhealthmatters", "mental wellness", "mentalhealth", "精神健康", "mental health care", "mental health professional", "mental health counseling", "mental illness", "santé mentale", "salud mental", "mental health professionals", "salute mentale", "saúde mental", "psychische gesundheit", "mentalhealthrevolution"],  "canonical": "mental health"}
-# MEDICINE: Pediatrics
-{"alt_forms": ["pädiatrie", "pediatric", "pediatricians", "pediatrics journals", "paediatricians", "stateofthechild", "pediatricresearch", "儿科", "pédiatrie", "pediatrician", "paediatrics", "pediatría", "pediatria", "小児科", "paediatrician"],  "canonical": "pediatrics"}
-# MEDICINE: Veterinary Medicine
-{"alt_forms": ["veterinary physicians", "veterinary science", "vetmedicine", "veterinary", "tierheilkunde", "vetmed", "médecine vétérinaire", "veterinary sciences", "獣医学", "veterinarian", "veterinarians", "老兵专用医药", "veterinary physician", "medicina veterinária", "animal health", "medicina veterinaria", "veterinary practice"],  "canonical": "veterinary medicine"}
-# MEDICINE: Medical Devices
-{"alt_forms": ["medicaldevices", "medizinische geräte", "équipement médical", "meddevices", "医疗设备", "meddevice", "medicaldevice", "医療機器", "dispositivi medici", "dispositivos médicos", "medical device"],  "canonical": "medical devices"}
-# DISEASES: Alzheimer's Disease
-{"alt_forms": ["la maladie d'alzheimer", "enfermedad de alzheimer", "alzheimer disease", "alzheimer's and dementia", "alzheimer's", "阿尔茨海默氏病", "alzheimers", "alzheimer-erkrankung", "doença de alzheimer", "alzheimer", "アルツハイマー病", "alzheimer's dementia", "il morbo di alzheimer"],  "canonical": "alzheimer's disease"}
-# DISEASES: Type 1 Diabetes
-{"alt_forms": ["jugendlicher diabetes", "diabete giovanile", "diabetes juvenil", "type1 diabetes", "type1diabetes", "青少年糖尿病", "type i diabetes", "diabetes 1", "diabète juvénile", "diabetes type 1", "juvenile diabetes", "diabetes1", "若年性糖尿病"],  "canonical": "type 1 diabetes"}
-# DISEASES: PTSD
-{"alt_forms": ["心的外傷後ストレス障害", "创伤后应激障碍", "disturbo post traumatico da stress", "transtorno de estresse pós-traumático", "posttraumatic stress disorder", "trastorno de estrés postraumático", "trouble de stress post-traumatique", "ptsd", "posttraumatische belastungsstörung"],  "canonical": "post traumatic stress disorder"}
-# SOCIAL: Anthropology
-{"alt_forms": ["ethnology", "antropología", "ethnologists", "anthropologie", "anthropologists", "antropologia", "人類学", "ethnologist", "人类学", "anthropologist"],  "canonical": "anthropology"}
-# SOCIAL: Philosophy
-{"alt_forms": ["history of philosophy", "filosofía", "philosophical schools", "philosophical methods", "philosophical logic", "philosophie", "philosophers", "哲学", "philosophical questions", "filosofia", "philosophical traditions", "philosophical inquiries"],  "canonical": "philosophy"}
-# SOCIAL: Archaeology
-{"alt_forms": ["考古学", "archéologie", "arqueologia", "archeology", "arqueología", "archäologie", "archeologia", "archaeologists", "archaeologist"],  "canonical": "archaeology"}
-# SOCIAL: Urban Agriculture
-{"alt_forms": ["agricoltura urbana", "urban farming", "都市農業", "urban farms", "urban farm", "urbanagriculture", "urbanfarming", "urbane landwirtschaft", "都市农业", "urban farmer", "agricultura urbana", "agriculture urbaine"],  "canonical": "urban agriculture"}
-# SOCIAL: Political Science
-{"alt_forms": ["pol science", "政治学", "science politique", "political studies", "politikwissenschaft", "polisci", "ciencias políticas", "politicalscience", "ciência política", "poli sci", "scienze politiche"],  "canonical": "political science"}
-# SOCIAL: Urban Planning
-{"alt_forms": ["planejamento urbano", "城市规划", "urban development", "regional planning", "pianificazione urbana", "urbanplanning", "town planning", "rural planning", "urbanismo", "aménagement urbain", "urban design", "urban planner", "cityplanning", "urban plan", "city planning", "都市計画", "urban and regional planning", "stadtplanung"],  "canonical": "urban planning"}
-# HEALTH-FITNESS: Veganism
-{"alt_forms": ["veganismo", "vegan food", "veganismus", "vegan diet", "vegan", "go vegan", "ビーガニズム", "vegans", "véganisme", "素食主义"],  "canonical": "veganism"}
-# HEALTH-FITNESS: Strength Training
-{"alt_forms": ["condicionamento de força", "condizionamento della forza", "strength conditioning", "acondicionamiento de fuerza", "krafttraining", "力量调节", "ストレングスコンディショニング", "conditionnement physique"],  "canonical": "strength training"}
-# HEALTH-FITNESS: Women's Health
-{"alt_forms": ["santé des femmes", "la salute delle donne", "la salud de la mujer", "女性健康", "saúde da mulher", "womenshealth", "womens health", "女性の健康", "women health", "frauengesundheit"], "canonical": "women's health"}
-# HEALTH-FITNESS: Men's Health
-{"alt_forms": ["men health", "男性の健康", "salute dell'uomo", "menshealth", "la santé des hommes", "a saúde dos homens", "andrology", "salud de los hombres", "männer gesundheit", "男性健康", "mens health"],  "canonical": "men's health"}
-# HEALTH-FITNESS: Food Safety
-{"alt_forms": ["food safety management", "食品安全", "food contamination", "seguridad alimenticia", "foodrecall", "la sécurité alimentaire", "food recalls", "food recall", "food alerts", "lebensmittelsicherheit", "segurança alimentar", "foodcontamination", "foodsafety", "la sicurezza alimentare", "foodalert"],  "canonical": "food safety"}
-# LEGAL: Criminology
-{"alt_forms": ["criminologia", "comparative criminology", "criminologie", "criminologists", "kriminologie", "criminología", "犯罪学", "criminologist", "criminology and criminal justice"],  "canonical": "criminology"}
-# LEGAL: Legaltech
-{"alt_forms": ["legal technology", "legaltech"],  "canonical": "legal tech"}
-# LEGAL: Divorce Law
-{"alt_forms": ["scheidungsrecht", "divorce lawyers", "divorce lawyer", "legge sul divorzio", "loi sur le divorce", "離婚法", "离婚法", "ley de divorcio", "divorcelaw", "lei do divórcio"],  "canonical": "divorce law"}
-# MISC: Interior Design
-{"alt_forms": ["innenarchitektur", "design de interiores", "home decorating", "室内设计", "インテリア・デザイン", "home decor", "interior designer", "interiordesign", "home decoration", "interior designers", "interior decorating", "design d'intérieur", "interior decorator", "interior decoration", "interior decor", "diseño de interiores", "interior decorators"],  "canonical": "interior design"}
-# MISC: Roofing
-{"alt_forms": ["überdachung", "toiture", "cobertura", "屋顶", "techumbre", "copertura", "屋根ふき"],  "canonical": "roofing"}
-# MISC: Commercial Real Estate
-{"alt_forms": ["商業不動産", "commercial property", "immobilier commercial", "commercialrealestate", "immobile commerciale", "commercialre", "bienes raíces comerciales", "commercial property news", "商业房地产", "commercial development", "commercial building", "gewerbeimmobilien", "imóveis comerciais"],  "canonical": "commercial real estate"}
-# MISC: Sustainable Tourism
-{"alt_forms": ["持続可能な観光", "可持续旅游", "responsible tourism", "el turismo sostenible", "turismo sostenibile", "sustainabletourism", "tourisme durable", "turismo sustentável", "nachhaltigen tourismus"],  "canonical": "sustainable tourism"}
-# SPORTS: College Football
-{"alt_forms": ["college football news", "collegefootball", "ncaa football", "ncaaf"],  "canonical": "college football"}
-# SPORTS: UFC
-{"alt_forms": ["ufc fight", "ufc on fox", "ufc", "ultimate fighting", "ufc fight night"],  "canonical": "ultimate fighting championship"}
-# SPORTS: Fly Fishing
-{"alt_forms": ["flyfishing", "fly fishermen", "dry fly fishing", "saltwater fly fishing"],  "canonical": "fly fishing"}
-# SPORTS: College Basketball
-{"alt_forms": ["men's college basketball", "college hoops", "women's college basketball", "college basketball news", "ncaa basketball"],  "canonical": "college basketball"}
-# SPORTS: NFL
-{"alt_forms": ["sunday night football", "nfl news", "monday night football", "nfl highlights", "nfl football"],  "canonical": "national football league"}
-# SPORTS: Fantasy Football
-{"alt_forms": ["fantasyfootball", "fantasy football league"],  "canonical": "fantasy football"}
-# SPORTS: MLS
-{"alt_forms": ["majorleaguesoccer", "mls soccer"],  "canonical": "major league soccer"}
-# SPORTS: MLB
-{"alt_forms": ["mlb baseball", "majorleaguebaseball"],  "canonical": "major league baseball"}
-# INDUSTRY: Oil & Gas
-{"alt_forms": ["石油和天然气工业", "industria petrolifera e del gas", "oil and gas", "oil gas", "oilindustry", "industria de petróleo y gas", "petroleum", "indústria de óleo e gás", "oil industry", "petroleum industry", "öl-und gasindustrie", "oil and gas companies", "石油およびガス産業", "gas oil", "oil and gas journal", "oil & gas industry", "industrie du pétrole et du gaz"],  "canonical": "oil and gas industry"}
-# INDUSTRY: Renewable Energy
-{"alt_forms": ["clean energy", "再生可能エネルギー", "energía renovable", "erneuerbare energie", "再生能源", "energia rinnovabile", "green energy", "alternative energy", "energia renovável", "green power", "green energy hub", "énergie renouvelable", "renewableenergy", "renewable energies", "renewables", "可再生能源"],  "canonical": "renewable energy"}
-# INDUSTRY: Telecom
-{"alt_forms": ["telecommunication", "telco", "电信", "telecomunicaciones", "電気通信", "telecomunicazioni", "telecom", "telecomm", "telecommunication industry", "telekommunikation", "telecomunicações", "telecomms", "telecommunications industry", "télécommunications"],  "canonical": "telecommunications"}
-# INDUSTRY: Supply Chain Management
-{"alt_forms": ["supply chain network", "supply chain risk management", "supply chain", "supplychain", "gestão da cadeia de abastecimento", "gestión de la cadena de suministro", "gestione della catena di approvvigionamento", "supply chain planning", "サプライチェーンマネジメント", "供应链管理", "leitung der lieferkette", "gestion de la chaîne logistique"], "canonical": "supply chain management"}
-# INDUSTRY: Agronomy
-{"alt_forms": ["crop research", "agronomist", "crop rotation", "agronomie", "agronomia", "农艺学", "croprotation", "農学", "cropresearch", "agronomists", "agronomía"], "canonical": "agronomy"}
+[
+    {"alt_forms": ["qubits", "quantumcomputing"],  "canonical": "quantum computing"},
+    {"alt_forms": ["artificial intel", "人工智能", "inteligencia artificial", "künstliche intelligenz", "人工知能", "artificialintelligence", "machine intelligence", "intelligenza artificiale", "inteligência artificial", "intelligence artificielle"],  "canonical": "artificial intelligence"},
+    {"alt_forms": ["ビットコイン", "bitcoins", "比特币", "bitcoin foundation"],  "canonical": "bitcoin"},
+    {"alt_forms": ["python programming language", "python software", "python programming"],  "canonical": "python"},
+    {"alt_forms": ["网络安全", "cíber segurança", "cyberspace security", "cyber security standards", "onlinesicherheit", "cybersecurity policy", "cybersecurity standards", "seguridad cibernética", "サイバーセキュリティ", "sicurezza informatica", "cyber security", "cyber-sécurité"],  "canonical": "cybersecurity"},
+    {"alt_forms": ["journalist", "journalists", "reporters"], "canonical": "journalism"},
+    {"alt_forms": ["american politics", "u s politics", "united states politics", "usa politics", "uspolitics"],  "canonical": "us politics"},  
+    {"alt_forms": ["international news", "nouvelles du monde", "internationalnews", "世界新闻", "weltnachrichten", "notizie dal mondo", "noticias del mundo", "noticias do mundo", "worldnews", "global news", "世界のニュース", "globalnews"],  "canonical": "world news"},
+    {"alt_forms": ["canada politics", "cdnpol", "canadianpolitics", "canadapolitics", "politics of canada", "politics canada", "cdnpoli"],  "canonical": "canadian politics"},
+    {"alt_forms": ["girlpower", "女性のエンパワーメント", "赋予妇女权力", "women empowering women", "girl power", "women power", "l'autonomisation des femmes", "emancipazione femminile", "empower women", "womenempowerment", "empoderamiento de las mujeres", "women empowerment", "empoderamento das mulheres", "empowerwomen", "frauenförderung"],  "canonical": "women's empowerment"},
+    {"alt_forms": ["global climate change", "das alterações climáticas", "climatechange", "気候変動", "climate talks", "klimawandel", "changement climatique", "global warming", "climate change mitigation", "climate action", "climate crisis", "气候变化", "climate change debate", "cambiamento climatico", "cambio climático", "globalwarming"],  "canonical": "climate change"},
+    {"alt_forms": ["gun violence", "waffenkontrolle", "us gun control", "le contrôle des armes", "銃規制", "gun laws", "gun safety", "controlo de armas", "controllo delle armi", "枪支控制", "control de armas", "guncontrol"], "canonical": "gun control"},
+    {"alt_forms": ["tierrechte", "cruelty to animals", "derechos animales", "animal rights activists", "animals right", "animal abuse", "動物の権利", "diritti degli animali", "animal welfare", "droits des animaux", "animal cruelty", "动物权益", "animal protection", "animal advocacy", "animal liberation", "animal suffering", "animalrights", "direito dos animais", "animal rights activism"], "canonical": "animal rights"},
+    {"alt_forms": ["開発援助", "aiuto per lo sviluppo", "overseas aid", "development assistance", "aide au développement", "ajuda ao desenvolvimento", "overseas development aid", "entwicklungshilfe", "ayuda para el desarrollo", "international aid", "foreign aid", "发展援助", "official development assistance"], "canonical": "development aid"},
+    {"alt_forms": ["venture industry", "capital-risque", "vc backed", "capital de risco", "venture fund", "startup funding", "venture capitalist", "ベンチャーキャピタル", "vc fund", "venture backed", "venture capitalism", "venturecapital", "risikokapital", "capital de riesgo", "vc funded", "风险投资", "capitale di rischio", "venture capitalists", "venture funding"],  "canonical": "venture capital"},
+    {"alt_forms": ["金融科技", "financial technology", "financial technologies", "フィンテック", "financial services software"],  "canonical": "fintech"},
+    {"alt_forms": ["merger and acquisitions", "acquisitions", "并购", "合併と買収", "fusions et acquisitions", "fusioni e acquisizioni", "fusiones y adquisiciones", "fusionen und übernahmen", "m & a", "has acquired", "closed acquisition of", "mergers & acquisitions", "fusões e aquisições", "merger and acquisition", "mergers"],  "canonical": "mergers and acquisitions"},
+    {"alt_forms": ["biotecnología", "biotech", "バイオテクノロジー", "biotechnologie", "biotecnologia", "bioindustry", "生物技术"],  "canonical": "biotechnology"},
+    {"alt_forms": ["nanotecnología", "nanotechnologie", "nanotech", "nanoscience", "纳米技术", "nano tech", "nanocrystals", "ナノテクノロジー", "nanotecnologia"],  "canonical": "nanotechnology"},
+    {"alt_forms": ["pharmaceuticals industry", "pharmaceutical", "pharma", "industrie pharmaceutique", "industria farmaceutica", "pharmaceutical industries", "indústria farmacêutica", "pharmaceuticals", "製薬業界", "farmaceuticals", "pharmaceutical drug", "pharmaindustrie", "pharma industry", "industria farmacéutica", "制药业"],  "canonical": "pharmaceutical industry"},
+    {"alt_forms": ["microbiologists", "微生物学", "mikrobiologie", "microorganism", "microbes", "microbiologia", "microbiología", "microbe", "microbiologist", "microbiologie", "microorganisms"],  "canonical": "microbiology"},
+    {"alt_forms": ["robotics engineer", "robótica", "robotic", "机器人", "robotique", "robotics engineers", "robotica", "ロボット工学", "robotik"],  "canonical": "robotics"},
+    {"alt_forms": ["seguridad del paciente", "medical regulations", "患者の安全", "medical regulators", "患者安全", "segurança do paciente", "la sicurezza del paziente", "patient safety policy", "sécurité du patient", "medical regulation", "patientsafety", "patientensicherheit"],  "canonical": "patient safety"},
+    {"alt_forms": ["notfallmedizin", "emergencymedicine", "emergencymed", "emergency medicine journals", "medicina de emergencia", "accident and emergency medicine", "救急医療", "medicina d'emergenza", "emergency physicians", "emergency physician", "emergency medicine physician", "médecine d'urgence", "emergency medical aid", "emergency med", "emergency care", "emergency medicine journal", "medicamento de emergência", "急诊医学", "emergency medicine physicians"],  "canonical": "emergency medicine"},
+    {"alt_forms": ["ortopedía", "orthopaedic surgery", "orthopaedic", "orthopedic medicine", "orthopédie", "骨科", "整形外科", "orthopädie", "orthopedic", "orthopaedic medicine", "orthopaedics", "ortopedia", "orthopedic surgery"],  "canonical": "orthopedics"},
+    {"alt_forms": ["メンタルヘルス", "mentalhealthmatters", "mental wellness", "mentalhealth", "精神健康", "mental health care", "mental health professional", "mental health counseling", "mental illness", "santé mentale", "salud mental", "mental health professionals", "salute mentale", "saúde mental", "psychische gesundheit", "mentalhealthrevolution"],  "canonical": "mental health"},
+    {"alt_forms": ["pädiatrie", "pediatric", "pediatricians", "pediatrics journals", "paediatricians", "stateofthechild", "pediatricresearch", "儿科", "pédiatrie", "pediatrician", "paediatrics", "pediatría", "pediatria", "小児科", "paediatrician"],  "canonical": "pediatrics"},
+    {"alt_forms": ["veterinary physicians", "veterinary science", "vetmedicine", "veterinary", "tierheilkunde", "vetmed", "médecine vétérinaire", "veterinary sciences", "獣医学", "veterinarian", "veterinarians", "老兵专用医药", "veterinary physician", "medicina veterinária", "animal health", "medicina veterinaria", "veterinary practice"],  "canonical": "veterinary medicine"},
+    {"alt_forms": ["medicaldevices", "medizinische geräte", "équipement médical", "meddevices", "医疗设备", "meddevice", "medicaldevice", "医療機器", "dispositivi medici", "dispositivos médicos", "medical device"],  "canonical": "medical devices"},
+    {"alt_forms": ["la maladie d'alzheimer", "enfermedad de alzheimer", "alzheimer disease", "alzheimer's and dementia", "alzheimer's", "阿尔茨海默氏病", "alzheimers", "alzheimer-erkrankung", "doença de alzheimer", "alzheimer", "アルツハイマー病", "alzheimer's dementia", "il morbo di alzheimer"],  "canonical": "alzheimer's disease"},
+    {"alt_forms": ["jugendlicher diabetes", "diabete giovanile", "diabetes juvenil", "type1 diabetes", "type1diabetes", "青少年糖尿病", "type i diabetes", "diabetes 1", "diabète juvénile", "diabetes type 1", "juvenile diabetes", "diabetes1", "若年性糖尿病"],  "canonical": "type 1 diabetes"},
+    {"alt_forms": ["心的外傷後ストレス障害", "创伤后应激障碍", "disturbo post traumatico da stress", "transtorno de estresse pós-traumático", "posttraumatic stress disorder", "trastorno de estrés postraumático", "trouble de stress post-traumatique", "ptsd", "posttraumatische belastungsstörung"],  "canonical": "post traumatic stress disorder"},
+    {"alt_forms": ["ethnology", "antropología", "ethnologists", "anthropologie", "anthropologists", "antropologia", "人類学", "ethnologist", "人类学", "anthropologist"],  "canonical": "anthropology"},
+    {"alt_forms": ["history of philosophy", "filosofía", "philosophical schools", "philosophical methods", "philosophical logic", "philosophie", "philosophers", "哲学", "philosophical questions", "filosofia", "philosophical traditions", "philosophical inquiries"],  "canonical": "philosophy"},
+    {"alt_forms": ["考古学", "archéologie", "arqueologia", "archeology", "arqueología", "archäologie", "archeologia", "archaeologists", "archaeologist"],  "canonical": "archaeology"},
+    {"alt_forms": ["agricoltura urbana", "urban farming", "都市農業", "urban farms", "urban farm", "urbanagriculture", "urbanfarming", "urbane landwirtschaft", "都市农业", "urban farmer", "agricultura urbana", "agriculture urbaine"],  "canonical": "urban agriculture"},
+    {"alt_forms": ["pol science", "政治学", "science politique", "political studies", "politikwissenschaft", "polisci", "ciencias políticas", "politicalscience", "ciência política", "poli sci", "scienze politiche"],  "canonical": "political science"},
+    {"alt_forms": ["planejamento urbano", "城市规划", "urban development", "regional planning", "pianificazione urbana", "urbanplanning", "town planning", "rural planning", "urbanismo", "aménagement urbain", "urban design", "urban planner", "cityplanning", "urban plan", "city planning", "都市計画", "urban and regional planning", "stadtplanung"],  "canonical": "urban planning"},
+    {"alt_forms": ["veganismo", "vegan food", "veganismus", "vegan diet", "vegan", "go vegan", "ビーガニズム", "vegans", "véganisme", "素食主义"],  "canonical": "veganism"},
+    {"alt_forms": ["condicionamento de força", "condizionamento della forza", "strength conditioning", "acondicionamiento de fuerza", "krafttraining", "力量调节", "ストレングスコンディショニング", "conditionnement physique"],  "canonical": "strength training"},
+    {"alt_forms": ["santé des femmes", "la salute delle donne", "la salud de la mujer", "女性健康", "saúde da mulher", "womenshealth", "womens health", "女性の健康", "women health", "frauengesundheit"], "canonical": "women's health"},
+    {"alt_forms": ["men health", "男性の健康", "salute dell'uomo", "menshealth", "la santé des hommes", "a saúde dos homens", "andrology", "salud de los hombres", "männer gesundheit", "男性健康", "mens health"],  "canonical": "men's health"},
+    {"alt_forms": ["food safety management", "食品安全", "food contamination", "seguridad alimenticia", "foodrecall", "la sécurité alimentaire", "food recalls", "food recall", "food alerts", "lebensmittelsicherheit", "segurança alimentar", "foodcontamination", "foodsafety", "la sicurezza alimentare", "foodalert"],  "canonical": "food safety"},
+    {"alt_forms": ["criminologia", "comparative criminology", "criminologie", "criminologists", "kriminologie", "criminología", "犯罪学", "criminologist", "criminology and criminal justice"],  "canonical": "criminology"},
+    {"alt_forms": ["legal technology", "legaltech"],  "canonical": "legal tech"},
+    {"alt_forms": ["scheidungsrecht", "divorce lawyers", "divorce lawyer", "legge sul divorzio", "loi sur le divorce", "離婚法", "离婚法", "ley de divorcio", "divorcelaw", "lei do divórcio"],  "canonical": "divorce law"},
+    {"alt_forms": ["innenarchitektur", "design de interiores", "home decorating", "室内设计", "インテリア・デザイン", "home decor", "interior designer", "interiordesign", "home decoration", "interior designers", "interior decorating", "design d'intérieur", "interior decorator", "interior decoration", "interior decor", "diseño de interiores", "interior decorators"],  "canonical": "interior design"},
+    {"alt_forms": ["überdachung", "toiture", "cobertura", "屋顶", "techumbre", "copertura", "屋根ふき"],  "canonical": "roofing"},
+    {"alt_forms": ["商業不動産", "commercial property", "immobilier commercial", "commercialrealestate", "immobile commerciale", "commercialre", "bienes raíces comerciales", "commercial property news", "商业房地产", "commercial development", "commercial building", "gewerbeimmobilien", "imóveis comerciais"],  "canonical": "commercial real estate"},
+    {"alt_forms": ["持続可能な観光", "可持续旅游", "responsible tourism", "el turismo sostenible", "turismo sostenibile", "sustainabletourism", "tourisme durable", "turismo sustentável", "nachhaltigen tourismus"],  "canonical": "sustainable tourism"},
+    {"alt_forms": ["college football news", "collegefootball", "ncaa football", "ncaaf"],  "canonical": "college football"},
+    {"alt_forms": ["ufc fight", "ufc on fox", "ufc", "ultimate fighting", "ufc fight night"],  "canonical": "ultimate fighting championship"},
+    {"alt_forms": ["flyfishing", "fly fishermen", "dry fly fishing", "saltwater fly fishing"],  "canonical": "fly fishing"},
+    {"alt_forms": ["men's college basketball", "college hoops", "women's college basketball", "college basketball news", "ncaa basketball"],  "canonical": "college basketball"},
+    {"alt_forms": ["sunday night football", "nfl news", "monday night football", "nfl highlights", "nfl football"],  "canonical": "national football league"},
+    {"alt_forms": ["fantasyfootball", "fantasy football league"],  "canonical": "fantasy football"},
+    {"alt_forms": ["majorleaguesoccer", "mls soccer"],  "canonical": "major league soccer"},
+    {"alt_forms": ["mlb baseball", "majorleaguebaseball"],  "canonical": "major league baseball"},
+    {"alt_forms": ["石油和天然气工业", "industria petrolifera e del gas", "oil and gas", "oil gas", "oilindustry", "industria de petróleo y gas", "petroleum", "indústria de óleo e gás", "oil industry", "petroleum industry", "öl-und gasindustrie", "oil and gas companies", "石油およびガス産業", "gas oil", "oil and gas journal", "oil & gas industry", "industrie du pétrole et du gaz"],  "canonical": "oil and gas industry"},
+    {"alt_forms": ["clean energy", "再生可能エネルギー", "energía renovable", "erneuerbare energie", "再生能源", "energia rinnovabile", "green energy", "alternative energy", "energia renovável", "green power", "green energy hub", "énergie renouvelable", "renewableenergy", "renewable energies", "renewables", "可再生能源"],  "canonical": "renewable energy"},
+    {"alt_forms": ["telecommunication", "telco", "电信", "telecomunicaciones", "電気通信", "telecomunicazioni", "telecom", "telecomm", "telecommunication industry", "telekommunikation", "telecomunicações", "telecomms", "telecommunications industry", "télécommunications"],  "canonical": "telecommunications"},
+    {"alt_forms": ["supply chain network", "supply chain risk management", "supply chain", "supplychain", "gestão da cadeia de abastecimento", "gestión de la cadena de suministro", "gestione della catena di approvvigionamento", "supply chain planning", "サプライチェーンマネジメント", "供应链管理", "leitung der lieferkette", "gestion de la chaîne logistique"], "canonical": "supply chain management"},
+    {"alt_forms": ["crop research", "agronomist", "crop rotation", "agronomie", "agronomia", "农艺学", "croprotation", "農学", "cropresearch", "agronomists", "agronomía"], "canonical": "agronomy"}
+    ]
