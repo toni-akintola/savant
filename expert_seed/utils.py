@@ -7,7 +7,9 @@ from bs4 import BeautifulSoup
 import re
 import time
 import wikipedia
-from concurrent.futures import ThreadPoolExecutor
+from datetime import timedelta
+
+wikipedia.set_rate_limiting(True, min_wait=timedelta(milliseconds=150))
 
 
 def load_bluesky_users(
@@ -297,4 +299,4 @@ def get_wikipedia_search_results(query: str) -> dict:
 
 
 if __name__ == "__main__":
-    print(get_wikipedia_search_results("The Daily Show"))
+    print(get_wikipedia_search_results("Ernie Smith"))
