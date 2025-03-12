@@ -187,7 +187,7 @@ export function UserProfiles() {
 
   return (
     <>
-      <div className="flex flex-col gap-6">
+      <div className="flex flex-col gap-6 w-full">
         <div className="space-y-5">
           <div>
             <h2 className="text-3xl font-bold tracking-tight">User Profiles</h2>
@@ -219,7 +219,7 @@ export function UserProfiles() {
         </div>
 
         {isFilterOpen && (
-          <Card>
+          <Card className="w-full">
             <CardContent className="p-6">
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 <div className="space-y-2">
@@ -279,17 +279,19 @@ export function UserProfiles() {
           </Card>
         )}
 
-        <Card>
+        <Card className="w-full">
           <CardContent className="p-0">
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead className="w-[280px] px-6">User</TableHead>
+                  <TableHead className="w-[280px] px-6">
+                    Display Name & Handle
+                  </TableHead>
                   <TableHead
-                    className="cursor-pointer"
+                    className="cursor-pointer text-center"
                     onClick={() => handleSort("followersCount")}
                   >
-                    <div className="flex items-center">
+                    <div className="flex items-center justify-center">
                       Followers
                       {sortField === "followersCount" && (
                         <ChevronDown
@@ -299,10 +301,10 @@ export function UserProfiles() {
                     </div>
                   </TableHead>
                   <TableHead
-                    className="cursor-pointer"
+                    className="cursor-pointer text-center"
                     onClick={() => handleSort("followsCount")}
                   >
-                    <div className="flex items-center">
+                    <div className="flex items-center justify-center">
                       Following
                       {sortField === "followsCount" && (
                         <ChevronDown
@@ -312,10 +314,10 @@ export function UserProfiles() {
                     </div>
                   </TableHead>
                   <TableHead
-                    className="cursor-pointer"
+                    className="cursor-pointer text-center"
                     onClick={() => handleSort("postsCount")}
                   >
-                    <div className="flex items-center">
+                    <div className="flex items-center justify-center">
                       Posts
                       {sortField === "postsCount" && (
                         <ChevronDown
@@ -324,12 +326,12 @@ export function UserProfiles() {
                       )}
                     </div>
                   </TableHead>
-                  <TableHead>Expertise</TableHead>
+                  <TableHead className="text-center">Expertise</TableHead>
                   <TableHead
-                    className="cursor-pointer"
+                    className="cursor-pointer text-center"
                     onClick={() => handleSort("createdAt")}
                   >
-                    <div className="flex items-center">
+                    <div className="flex items-center justify-center">
                       Created
                       {sortField === "createdAt" && (
                         <ChevronDown
@@ -355,23 +357,23 @@ export function UserProfiles() {
                           </div>
                         </div>
                       </TableCell>
-                      <TableCell>
-                        <Skeleton className="h-4 w-16" />
+                      <TableCell className="text-center">
+                        <Skeleton className="h-4 w-16 mx-auto" />
                       </TableCell>
-                      <TableCell>
-                        <Skeleton className="h-4 w-16" />
+                      <TableCell className="text-center">
+                        <Skeleton className="h-4 w-16 mx-auto" />
                       </TableCell>
-                      <TableCell>
-                        <Skeleton className="h-4 w-16" />
+                      <TableCell className="text-center">
+                        <Skeleton className="h-4 w-16 mx-auto" />
                       </TableCell>
-                      <TableCell>
-                        <div className="flex gap-1">
+                      <TableCell className="text-center px-4">
+                        <div className="flex gap-1 justify-center">
                           <Skeleton className="h-5 w-16 rounded-full" />
                           <Skeleton className="h-5 w-20 rounded-full" />
                         </div>
                       </TableCell>
-                      <TableCell>
-                        <Skeleton className="h-4 w-24" />
+                      <TableCell className="text-center">
+                        <Skeleton className="h-4 w-24 mx-auto" />
                       </TableCell>
                       <TableCell className="text-right px-6">
                         <Skeleton className="h-8 w-8 rounded-md ml-auto" />
@@ -408,11 +410,17 @@ export function UserProfiles() {
                           </div>
                         </div>
                       </TableCell>
-                      <TableCell>{formatNumber(user.followersCount)}</TableCell>
-                      <TableCell>{formatNumber(user.followsCount)}</TableCell>
-                      <TableCell>{formatNumber(user.postsCount)}</TableCell>
-                      <TableCell>
-                        <div className="flex flex-wrap gap-1">
+                      <TableCell className="text-center">
+                        {formatNumber(user.followersCount)}
+                      </TableCell>
+                      <TableCell className="text-center">
+                        {formatNumber(user.followsCount)}
+                      </TableCell>
+                      <TableCell className="text-center">
+                        {formatNumber(user.postsCount)}
+                      </TableCell>
+                      <TableCell className="text-center px-4">
+                        <div className="flex flex-wrap gap-1 justify-center">
                           {user.metadata?.topics_of_expertise
                             ?.slice(0, 3)
                             .map((topic) => (
@@ -426,7 +434,9 @@ export function UserProfiles() {
                             ))}
                         </div>
                       </TableCell>
-                      <TableCell>{formatDate(user.createdAt)}</TableCell>
+                      <TableCell className="text-center">
+                        {formatDate(user.createdAt)}
+                      </TableCell>
                       <TableCell className="text-right px-6">
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild>

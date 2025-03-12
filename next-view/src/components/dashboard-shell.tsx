@@ -34,7 +34,7 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
 
   return (
     <SidebarProvider>
-      <div className="flex min-h-screen">
+      <div className="flex min-h-screen min-w-full">
         <AppSidebar />
         <div className="flex-1">
           <header className="sticky top-0 z-30 flex h-16 items-center gap-4 border-b bg-background px-6">
@@ -45,7 +45,7 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
               <UserNav />
             </div>
           </header>
-          <main className="grid flex-1 items-start gap-4 p-4 md:gap-8 md:p-6">
+          <main className="grid flex-1 items-start gap-4 p-4 md:gap-8 md:p-8 lg:p-10 max-w-full">
             {children}
           </main>
         </div>
