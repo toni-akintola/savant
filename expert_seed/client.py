@@ -1,9 +1,14 @@
+import json
 from atproto import Client, client_utils
 from dotenv import load_dotenv
 import os
 import time
 import requests
 from enum import Enum
+
+from tqdm import tqdm
+
+from utils import write_json_lines
 
 load_dotenv()
 
@@ -106,5 +111,49 @@ def get_posts_public_api(
     """
     url = f"{PUBLIC_API_URL}/xrpc/app.bsky.feed.getAuthorFeed?actor={handle}&limit={limit}&filter={filter.value}"
     response = requests.get(url)
-    response.raise_for_status()  # Raise an exception for bad responses
+    try:
+        response.raise_for_status()  # Raise an exception for bad responses
+    except Exception as e:
+        print(f"Error fetching posts for @{handle}: {e}")
+        return []
     return response.json()["feed"]
+
+
+def get_posts_authenticated(
+    handle: str, limit: int = 10, filter: FeedFilter = FeedFilter.posts_no_replies
+) -> list[dict]:
+    """
+    Get all posts of an account using an authenticated Bluesky client
+    """
+    client = get_client()
+    return client.get_author_feed(handle, limit=limit, filter=filter)["feed"]
+
+
+def get_lists_public_api(handle: str) -> list[dict]:
+    """
+    Get all lists of an account using the public Bluesky API via requests
+    """
+    url = f"{PUBLIC_API_URL}/xrpc/app.bsky.graph.getLists?actor={handle}"
+    response = requests.get(url)
+    response.raise_for_status()
+    return response.json()["lists"]
+
+
+if __name__ == "__main__":
+    client = get_client()
+
+    def process_user(user: dict):
+        feed = get_posts_public_api(user["handle"])
+        user["posts"] = [post["post"]["record"]["text"] for post in feed]
+
+        return user
+
+    users = json.load(open("final_profiles.json"))
+    users_with_posts = json.load(open("user_profiles_with_unstructured_data copy.json"))
+    result = {}
+    for user in users:
+        result[user["handle"]] = user
+    for user in users_with_posts:
+        posts = [post["record"]["text"] for post in user["recent_posts"]]
+        result[user["handle"]]["posts"] = posts
+    write_json_lines("final_profiles_with_posts.json", list(result.values()))
