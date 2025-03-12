@@ -46,14 +46,18 @@ import {
   getUserById,
   type User,
   type SearchParams,
+  type ValidSortField,
 } from "@/app/actions";
 import { Skeleton } from "@/components/ui/skeleton";
+
+// Get the valid sort fields from the actions file
+// type ValidSortField = "followersCount" | "followsCount" | "postsCount" | "createdAt" | "_id" | "handle" | "displayName";
 
 export function UserProfiles() {
   // Search and filter state
   const [searchQuery, setSearchQuery] = useState("");
   const debouncedSearchQuery = useDebounce(searchQuery, 300);
-  const [sortField, setSortField] = useState<string>("followersCount");
+  const [sortField, setSortField] = useState<ValidSortField>("followersCount");
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("desc");
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
@@ -121,7 +125,7 @@ export function UserProfiles() {
     filters,
   ]);
 
-  const handleSort = (field: string) => {
+  const handleSort = (field: ValidSortField) => {
     if (sortField === field) {
       setSortDirection(sortDirection === "asc" ? "desc" : "asc");
     } else {
@@ -183,21 +187,21 @@ export function UserProfiles() {
 
   return (
     <>
-      <div className="flex flex-col gap-4">
-        <div className="space-y-4">
+      <div className="flex flex-col gap-6">
+        <div className="space-y-5">
           <div>
             <h2 className="text-3xl font-bold tracking-tight">User Profiles</h2>
-            <p className="text-muted-foreground">
+            <p className="text-muted-foreground mt-1">
               Manage and explore user profiles from your database.
             </p>
           </div>
           <div className="flex items-center gap-4">
             <div className="relative flex-1">
-              <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+              <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
               <Input
                 type="search"
                 placeholder="Search users by name, handle, or description..."
-                className="pl-8 w-full"
+                className="pl-10 h-10 w-full"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
@@ -216,8 +220,8 @@ export function UserProfiles() {
 
         {isFilterOpen && (
           <Card>
-            <CardContent className="p-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <CardContent className="p-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 <div className="space-y-2">
                   <label className="text-sm font-medium">Min Followers</label>
                   <Input
@@ -263,7 +267,7 @@ export function UserProfiles() {
                   />
                 </div>
               </div>
-              <div className="flex justify-end mt-4 gap-2">
+              <div className="flex justify-end mt-6 gap-3">
                 <Button variant="outline" onClick={clearFilters}>
                   Clear
                 </Button>
@@ -280,7 +284,7 @@ export function UserProfiles() {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead className="w-[250px]">User</TableHead>
+                  <TableHead className="w-[280px] px-6">User</TableHead>
                   <TableHead
                     className="cursor-pointer"
                     onClick={() => handleSort("followersCount")}
@@ -334,7 +338,7 @@ export function UserProfiles() {
                       )}
                     </div>
                   </TableHead>
-                  <TableHead className="text-right">Actions</TableHead>
+                  <TableHead className="text-right px-6">Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -342,9 +346,9 @@ export function UserProfiles() {
                   // Loading skeleton
                   Array.from({ length: 5 }).map((_, index) => (
                     <TableRow key={index}>
-                      <TableCell>
-                        <div className="flex items-center gap-2">
-                          <Skeleton className="h-8 w-8 rounded-full" />
+                      <TableCell className="px-6">
+                        <div className="flex items-center gap-3">
+                          <Skeleton className="h-10 w-10 rounded-full" />
                           <div className="space-y-1">
                             <Skeleton className="h-4 w-32" />
                             <Skeleton className="h-3 w-24" />
@@ -369,7 +373,7 @@ export function UserProfiles() {
                       <TableCell>
                         <Skeleton className="h-4 w-24" />
                       </TableCell>
-                      <TableCell className="text-right">
+                      <TableCell className="text-right px-6">
                         <Skeleton className="h-8 w-8 rounded-md ml-auto" />
                       </TableCell>
                     </TableRow>
@@ -383,9 +387,9 @@ export function UserProfiles() {
                 ) : (
                   users.map((user) => (
                     <TableRow key={user._id}>
-                      <TableCell className="font-medium">
-                        <div className="flex items-center gap-2">
-                          <Avatar className="h-8 w-8">
+                      <TableCell className="font-medium px-6">
+                        <div className="flex items-center gap-3">
+                          <Avatar className="h-10 w-10">
                             <AvatarImage
                               src={user.avatar}
                               alt={user.displayName}
@@ -395,7 +399,7 @@ export function UserProfiles() {
                             </AvatarFallback>
                           </Avatar>
                           <div>
-                            <div className="font-medium">
+                            <div className="font-medium text-base">
                               {user.displayName}
                             </div>
                             <div className="text-sm text-muted-foreground">
@@ -423,10 +427,14 @@ export function UserProfiles() {
                         </div>
                       </TableCell>
                       <TableCell>{formatDate(user.createdAt)}</TableCell>
-                      <TableCell className="text-right">
+                      <TableCell className="text-right px-6">
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" size="icon">
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="h-8 w-8"
+                            >
                               <MoreHorizontal className="h-4 w-4" />
                               <span className="sr-only">Open menu</span>
                             </Button>
@@ -450,7 +458,7 @@ export function UserProfiles() {
               </TableBody>
             </Table>
           </CardContent>
-          <div className="flex items-center justify-between p-4 border-t">
+          <div className="flex items-center justify-between px-6 py-4 border-t">
             <div className="text-sm text-muted-foreground">
               {isLoading ? (
                 <Skeleton className="h-4 w-40" />
@@ -461,7 +469,7 @@ export function UserProfiles() {
                 </>
               )}
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-3">
               <Button
                 variant="outline"
                 size="icon"
@@ -474,7 +482,7 @@ export function UserProfiles() {
                   <ChevronLeft className="h-4 w-4" />
                 )}
               </Button>
-              <span className="text-sm">
+              <span className="text-sm font-medium">
                 Page {currentPage} of {totalPages}
               </span>
               <Button

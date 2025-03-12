@@ -29,12 +29,25 @@ const UserSchema = z.object({
 
 export type User = z.infer<typeof UserSchema>;
 
+// Define valid sort fields as keys of the User type
+type UserKey = keyof User;
+const validSortFields = [
+  "followersCount",
+  "followsCount",
+  "postsCount",
+  "createdAt",
+  "_id",
+  "handle",
+  "displayName",
+] as const;
+export type ValidSortField = (typeof validSortFields)[number];
+
 // Define the search params schema
 const SearchParamsSchema = z.object({
   query: z.string().optional(),
   page: z.coerce.number().default(1),
   limit: z.coerce.number().default(10),
-  sortField: z.string().default("followersCount"),
+  sortField: z.enum(validSortFields).default("followersCount"),
   sortDirection: z.enum(["asc", "desc"]).default("desc"),
   minFollowers: z.coerce.number().optional(),
   maxFollowers: z.coerce.number().optional(),
@@ -210,10 +223,11 @@ export async function searchUsers(params: SearchParams) {
 
   // Apply sorting
   filteredUsers.sort((a, b) => {
+    const field = validParams.sortField as keyof User;
     if (validParams.sortDirection === "asc") {
-      return a[validParams.sortField] > b[validParams.sortField] ? 1 : -1;
+      return a[field] > b[field] ? 1 : -1;
     } else {
-      return a[validParams.sortField] < b[validParams.sortField] ? 1 : -1;
+      return a[field] < b[field] ? 1 : -1;
     }
   });
 

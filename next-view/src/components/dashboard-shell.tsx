@@ -3,9 +3,9 @@
 import type React from "react";
 
 import { useState } from "react";
-import { ModeToggle } from "@/app/components/mode-toggle";
-import { UserNav } from "@/app/components/user-nav";
-import { MainNav } from "@/app/components/main-nav";
+import { ModeToggle } from "@/components/mode-toggle";
+import { UserNav } from "@/components/user-nav";
+import { MainNav } from "@/components/main-nav";
 import {
   SidebarProvider,
   Sidebar,
