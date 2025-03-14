@@ -8,14 +8,34 @@
 {"alt_forms": ["python programming language", "python software", "python programming"],  "canonical": "python"}
 # TECH: cybersecurity
 {"alt_forms": ["网络安全", "cíber segurança", "cyberspace security", "cyber security standards", "onlinesicherheit", "cybersecurity policy", "cybersecurity standards", "seguridad cibernética", "サイバーセキュリティ", "sicurezza informatica", "cyber security", "cyber-sécurité"],  "canonical": "cybersecurity"}
-# POLITICS & NEWS: US politics
+# TECH: Robotics
+{"alt_forms": ["robotics engineer", "robótica", "robotic", "机器人", "robotique", "robotics engineers", "robotica", "ロボット工学", "robotik"],  "canonical": "robotics"}
+# TECH: Internet of Things
+{"alt_forms": ["internet de las cosas", "internet das coisas", "internet der dinge", "cloud of things", "internetofthings", "internet des objets", "モノのインターネット", "internet delle cose", "物联网"], "type": "basic", "name": "internet of things"}
+# TECH: DevOps
+{"alt_forms": ["devopstoolchain"], "type": "basic", "name": "devops"}
+# TECH: Data Visualization
+{"alt_forms": ["data visualisation", "visualizzazione dati", "dataviz", "visualisation de données", "datavis", "データの視覚化", "visualización de datos", "数据可视化", "datenvisualisierung", "data viz", "visualização de dados"], "type": "basic", "name": "data visualization"}
+# TECH: Free & Open Source
+{"alt_forms": ["gratuito e open source", "gratuit et open source", "free open source software", "free open source", "livre e de código aberto", "free and open source", "免费和开源", "無料でオープンソース", "kostenlos und open source", "libre y de código abierto", "foss"], "type": "basic", "name": "free and open source software"}
+# TECH: Nosql
+{"alt_forms": ["nosql databases", "no sql", "nosql database", "not only sql"], "type": "basic", "name": "nosql"}
+# TECH: Rust programming language
+{"alt_forms": ["rust programming", "rust programmer", "rust programmers"], "canonical": "rust programming language"}
+# TECH: Go Language
+{"alt_forms": ["去编程语言", "go language", "go lang", "geh programmiersprache", "golanguage", "プログラミング言語に行く", "golang", "aller au langage de programmation", "vai al linguaggio di programmazione", "google go", "ir al lenguaje de programación", "vá a linguagem de programação"], "type": "basic", "name": "go programming language"}
+# TECH: Digital Forensics
+{"alt_forms": ["forense digital", "digital forensic science", "数字取证", "デジタルフォレンジック", "forense digitale", "médecine légale numérique", "digitale forensik", "digitalforensics"], "type": "basic", "name": "digital forensics"}
+# POLITICS & NEWS: Journalism
 {"alt_forms": ["journalist", "journalists", "reporters"], "canonical": "journalism"}
 # POLITICS & NEWS: US politics
 {"alt_forms": ["american politics", "u s politics", "united states politics", "usa politics", "uspolitics"],  "canonical": "us politics"}
 # POLITICS & NEWS: World News
-{"alt_forms": ["international news", "nouvelles du monde", "internationalnews", "世界新闻", "weltnachrichten", "notizie dal mondo", "noticias del mundo", "noticias do mundo", "worldnews", "global news", "世界のニュース", "globalnews"],  "canonical": "world news"}
+{"alt_forms": ["international news", "nouvelles du monde", "internationalnews", "世界新闻", "weltnachrichten", "notizie dal mondo", "noticias del mundo", "noticias do mundo", "worldnews", "global news", "世界のニュース", "globalnews"], "canonical": "world news"}
 # POLITICS & NEWS: Canadian Poltics
 {"alt_forms": ["canada politics", "cdnpol", "canadianpolitics", "canadapolitics", "politics of canada", "politics canada", "cdnpoli"],  "canonical": "canadian politics"}
+# POLITICS & NEWS: EU Politics
+{"alt_forms": ["eu politics", "european union government", "eupolitics", "eu government", "european politics"], "type": "basic", "name": "european union politics"}
 # ACTIVISM: women empowerment
 {"alt_forms": ["girlpower", "女性のエンパワーメント", "赋予妇女权力", "women empowering women", "girl power", "women power", "l'autonomisation des femmes", "emancipazione femminile", "empower women", "womenempowerment", "empoderamiento de las mujeres", "women empowerment", "empoderamento das mulheres", "empowerwomen", "frauenförderung"],  "canonical": "women's empowerment"}
 # ACTIVISM: Climate Change
@@ -26,12 +46,26 @@
 {"alt_forms": ["tierrechte", "cruelty to animals", "derechos animales", "animal rights activists", "animals right", "animal abuse", "動物の権利", "diritti degli animali", "animal welfare", "droits des animaux", "animal cruelty", "动物权益", "animal protection", "animal advocacy", "animal liberation", "animal suffering", "animalrights", "direito dos animais", "animal rights activism"], "canonical": "animal rights"}
 # ACTIVISM: Development Aid
 {"alt_forms": ["開発援助", "aiuto per lo sviluppo", "overseas aid", "development assistance", "aide au développement", "ajuda ao desenvolvimento", "overseas development aid", "entwicklungshilfe", "ayuda para el desarrollo", "international aid", "foreign aid", "发展援助", "official development assistance"], "canonical": "development aid"}
+# ACTIVISM: Drug Policy Reform
+{"alt_forms": ["drugpolicyreform", "drug law reform", "薬物政策改革", "毒品政策改革", "réforme de la politique des drogues", "reforma de la política de drogas", "drug policy", "war on drugs", "drugreform", "drug reform", "reform der drogenpolitik", "riforma della politica sulla droga", "drug wars", "reforma da política de drogas", "warondrugs"], "type": "basic", "name": "drug policy reform"}
+# ACTIVISM: LGBT rights
+{"alt_forms": ["droits lgb", "lgbtの権利", "lgbti rights", "gay rights", "direitos lgbt", "lgbt-rechte", "同性恋权利", "derechos lgbt", "diritti lgbt", "lgbt equality"], "type": "basic", "name": "lgbt rights"}
 # FINANCE: venture capital
 {"alt_forms": ["venture industry", "capital-risque", "vc backed", "capital de risco", "venture fund", "startup funding", "venture capitalist", "ベンチャーキャピタル", "vc fund", "venture backed", "venture capitalism", "venturecapital", "risikokapital", "capital de riesgo", "vc funded", "风险投资", "capitale di rischio", "venture capitalists", "venture funding"],  "canonical": "venture capital"}
+# FINANCE: Personal Finance
+{"alt_forms": ["financial planner", "financial literacy", "personal finances", "consumer finance", "personalfinance", "financial planning", "个人财务", "finanças pessoais", "finanzas personales", "financial education", "persönliche finanzen", "finances personnelles", "個人融資", "financial plan", "finanza personale"], "type": "basic", "name": "personal finance"}
 # FINANCE: fintech
 {"alt_forms": ["金融科技", "financial technology", "financial technologies", "フィンテック", "financial services software"],  "canonical": "fintech"}
 # FINANCE: mergers and acquisitions
 {"alt_forms": ["merger and acquisitions", "acquisitions", "并购", "合併と買収", "fusions et acquisitions", "fusioni e acquisizioni", "fusiones y adquisiciones", "fusionen und übernahmen", "m & a", "has acquired", "closed acquisition of", "mergers & acquisitions", "fusões e aquisições", "merger and acquisition", "mergers"],  "canonical": "mergers and acquisitions"}
+# FINANCE: Crude Oil 
+{"alt_forms": ["$cl", "原油", "brent futures", "rohöl", "óleo cru", "oilfutures", "crude oil futures", "petróleo crudo", "olio crudo", "brent oil", "brent crude", "nymex crude", "west texas intermediate", "oil futures", "west texas oil", "oil analysts", "oil pricing", "wti futures", "oil price", "huile brute", "crudeoil", "ice brent", "wti oil"], "type": "basic", "name": "crude oil"}
+# EDUCATION: stem education
+{"alt_forms": ["stem fields", "幹教育", "educazione allo stelo", "stammbildung", "educação de base", "干教育", "educación madre", "stemeducation", "éducation des tiges"], "type": "basic", "name": "stem education"}
+# EDUCATION: special needs education
+{"alt_forms": ["educación para necesidades especiales", "special ed", "specialed", "special needs educators", "特別支援教育", "special education", "special educational needs", "特殊需要教育", "educação para necessidades especiais", "special educators", "educazione speciale needs", "sonderpädagogik", "special needs educator", "éducation des besoins spéciaux"], "type": "basic", "name": "special needs education"}
+# EDUCATION: educational technology
+{"alt_forms": ["bildungstechnologie", "tecnologia educativa", "ed tech", "教育工学", "edtech", "教育技术", "ict in education", "ict education", "instructional technology", "edutech", "education technology", "learning technologies", "educational technologies", "technologie educative", "tecnologia educacional", "technology in education", "learning technology"], "type": "basic", "name": "educational technology"}
 # SCIENCE: biotechnology
 {"alt_forms": ["biotecnología", "biotech", "バイオテクノロジー", "biotechnologie", "biotecnologia", "bioindustry", "生物技术"],  "canonical": "biotechnology"}
 # SCIENCE: Nanotechnology
@@ -40,8 +74,6 @@
 {"alt_forms": ["pharmaceuticals industry", "pharmaceutical", "pharma", "industrie pharmaceutique", "industria farmaceutica", "pharmaceutical industries", "indústria farmacêutica", "pharmaceuticals", "製薬業界", "farmaceuticals", "pharmaceutical drug", "pharmaindustrie", "pharma industry", "industria farmacéutica", "制药业"],  "canonical": "pharmaceutical industry"}
 # SCIENCE: Microbiology
 {"alt_forms": ["microbiologists", "微生物学", "mikrobiologie", "microorganism", "microbes", "microbiologia", "microbiología", "microbe", "microbiologist", "microbiologie", "microorganisms"],  "canonical": "microbiology"}
-# SCIENCE: Robotics
-{"alt_forms": ["robotics engineer", "robótica", "robotic", "机器人", "robotique", "robotics engineers", "robotica", "ロボット工学", "robotik"],  "canonical": "robotics"}
 # MEDICINE: Patient Safety
 {"alt_forms": ["seguridad del paciente", "medical regulations", "患者の安全", "medical regulators", "患者安全", "segurança do paciente", "la sicurezza del paziente", "patient safety policy", "sécurité du patient", "medical regulation", "patientsafety", "patientensicherheit"],  "canonical": "patient safety"}
 # MEDICINE: Emergency Medicine
@@ -98,6 +130,8 @@
 {"alt_forms": ["商業不動産", "commercial property", "immobilier commercial", "commercialrealestate", "immobile commerciale", "commercialre", "bienes raíces comerciales", "commercial property news", "商业房地产", "commercial development", "commercial building", "gewerbeimmobilien", "imóveis comerciais"],  "canonical": "commercial real estate"}
 # MISC: Sustainable Tourism
 {"alt_forms": ["持続可能な観光", "可持续旅游", "responsible tourism", "el turismo sostenible", "turismo sostenibile", "sustainabletourism", "tourisme durable", "turismo sustentável", "nachhaltigen tourismus"],  "canonical": "sustainable tourism"}
+# MISC: sleep research
+{"alt_forms": ["sleep researcher", "sleep researchers", "sleep experts", "good sleep", "better sleep", "sleep advice", "sleep tips", "good night's sleep", "sleep environment"], "type": "basic", "name": "sleep research"}
 # SPORTS: College Football
 {"alt_forms": ["college football news", "collegefootball", "ncaa football", "ncaaf"],  "canonical": "college football"}
 # SPORTS: UFC
@@ -106,14 +140,16 @@
 {"alt_forms": ["flyfishing", "fly fishermen", "dry fly fishing", "saltwater fly fishing"],  "canonical": "fly fishing"}
 # SPORTS: College Basketball
 {"alt_forms": ["men's college basketball", "college hoops", "women's college basketball", "college basketball news", "ncaa basketball"],  "canonical": "college basketball"}
+# SPORTS: NBA
+{"alt_forms": ["nba", "nba basketball"], "type": "basic", "name": "national basketball association"}
 # SPORTS: NFL
-{"alt_forms": ["sunday night football", "nfl news", "monday night football", "nfl highlights", "nfl football"],  "canonical": "national football league"}
+{"alt_forms": ["nfl", "sunday night football", "nfl news", "monday night football", "nfl highlights", "nfl football"],  "canonical": "national football league"}
 # SPORTS: Fantasy Football
 {"alt_forms": ["fantasyfootball", "fantasy football league"],  "canonical": "fantasy football"}
 # SPORTS: MLS
-{"alt_forms": ["majorleaguesoccer", "mls soccer"],  "canonical": "major league soccer"}
+{"alt_forms": ["mls", "majorleaguesoccer", "mls soccer"],  "canonical": "major league soccer"}
 # SPORTS: MLB
-{"alt_forms": ["mlb baseball", "majorleaguebaseball"],  "canonical": "major league baseball"}
+{"alt_forms": ["mlb", "mlb baseball", "majorleaguebaseball"],  "canonical": "major league baseball"}
 # INDUSTRY: Oil & Gas
 {"alt_forms": ["石油和天然气工业", "industria petrolifera e del gas", "oil and gas", "oil gas", "oilindustry", "industria de petróleo y gas", "petroleum", "indústria de óleo e gás", "oil industry", "petroleum industry", "öl-und gasindustrie", "oil and gas companies", "石油およびガス産業", "gas oil", "oil and gas journal", "oil & gas industry", "industrie du pétrole et du gaz"],  "canonical": "oil and gas industry"}
 # INDUSTRY: Renewable Energy
