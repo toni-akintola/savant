@@ -8,9 +8,8 @@ from pymongo.database import Database
 import ijson
 
 load_dotenv()
-MONGODB_URI = "mongodb+srv://takintola:ghyJc5M0aiAFXohV@cluster0.l7asyls.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
 
-
+MONGODB_URI = os.getenv("MONGODB_URI")
 def get_database() -> Database:
     client = MongoClient(MONGODB_URI, server_api=ServerApi("1"))
     return client["Filter"]
